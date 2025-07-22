@@ -1,11 +1,11 @@
 {% for cliente in clientes %}
-  <div class="client-list-item py-2 px-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer" data-id="{{ cliente.id }}">
-    <div class="font-semibold text-gray-800">{{ cliente.nome }}</div>
-    <div class="text-xs text-gray-500">CPF/CNPJ: {{ cliente.cpf_cnpj }} | Tel: {{ cliente.telefone }} | Cel: {{ cliente.celular }}</div>
-    <div class="text-xs text-gray-500">Email: {{ cliente.email }} | Cidade: {{ cliente.cidade }}</div>
-  </div>
+<div class="client-list-item" data-id="{{ cliente.id }}">
+    <strong>{{ cliente.nome }}</strong> - {{ cliente.cpf_cnpj }}<br>
+    {{ cliente.telefone }} | {{ cliente.email }}
+    <!-- Adicione outros campos que quiser exibir -->
+</div>
 {% empty %}
-  <div class="p-6 text-center text-gray-500">Nenhum cliente encontrado.</div>
+<div class="p-4 text-center text-gray-500">Nenhum cliente encontrado.</div>
 {% endfor %}
 
 <!-- Indicador de carregamento para scroll infinito -->

@@ -9,6 +9,15 @@
 {% endblock %}
 
 {% block content %}
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-6 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <!-- Main Layout -->
     <div class="flex flex-col-reverse lg:flex-row gap-6">
         <!-- Left Column - Form (60%) -->
@@ -47,11 +56,11 @@
                         </div>
                     </div>
 
-                    <!-- Informações do Cliente -->
+                    <!-- Seleção de Cliente -->
                     <div class="border-t pt-6 mb-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações do Cliente</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                            <div>
+                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações do Cliente</h3>
+                        <div class="grid grid-cols-1 gap-6 mb-6">
+                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
                                 <select name="cliente" id="cliente" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500" data-get-cliente-url-template="{% url 'rat:get_cliente_data' 0 %}">
                                     <option value="">Selecione um cliente</option>
@@ -60,14 +69,18 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-                                <input type="text" name="cliente_nome" id="cliente_nome" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">CPF/CNPJ</label>
-                                <input type="text" name="cliente_cpf_cnpj" id="cliente_cpf_cnpj" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
-                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Dados do Cliente (preenchido dinamicamente) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                            <input type="text" name="cliente_nome" id="cliente_nome" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">CPF/CNPJ</label>
+                            <input type="text" name="cliente_cpf_cnpj" id="cliente_cpf_cnpj" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
                         </div>
                     </div>
                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -108,47 +121,35 @@
                     <!-- Informações do Equipamento -->
                     <div class="border-t pt-6 mb-6">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações do Equipamento</h3>
-                        <div class="flex justify-between items-center mb-4">
-                            <span></span>
-                            <button type="button" id="adicionar-equipamento" class="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">Adicionar Equipamento</button>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Equipamento</label>
+                                <input type="text" name="equipamento" id="equipamento" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Fabricante</label>
+                                <input type="text" name="fabricante" id="fabricante" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
                         </div>
-                        <div id="equipamentos-container"></div>
-                        <!-- Template oculto para bloco de equipamento -->
-                        <div id="equipamento-template" class="hidden">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Equipamento</label>
-                                    <input type="text" name="equipamento[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Fabricante</label>
-                                    <input type="text" name="fabricante[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
-                                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
+                                <input type="text" name="modelo" id="modelo" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
-                                    <input type="text" name="modelo[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Número de Série</label>
-                                    <input type="text" name="numero_serie[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
-                                </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Número de Série</label>
+                                <input type="text" name="numero_serie" id="numero_serie" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Data da Instalação</label>
-                                    <input type="date" name="data_instalacao[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Data da Compra</label>
-                                    <input type="date" name="data_compra[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
-                                </div>
+                        </div>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                             <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Data da Instalação</label>
+                                <input type="date" name="data_instalacao" id="data_instalacao" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
                             </div>
-                            <div class="flex justify-end mb-4">
-                                <button type="button" class="remover-equipamento px-2 py-1 bg-red-500 text-white rounded hover:bg-red-700 text-xs">Remover</button>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Data da Compra</label>
+                                <input type="date" name="data_compra" id="data_compra" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
                             </div>
-                            <hr class="mb-4">
                         </div>
                     </div>
 

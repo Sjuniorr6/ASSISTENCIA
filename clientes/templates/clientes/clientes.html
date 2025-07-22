@@ -19,6 +19,16 @@
         <div id="form-column" class="lg:w-3/5 space-y-6">
             <!-- Client Form -->
             <div class="bg-white rounded-lg shadow-lg p-6 compact-form">
+                {% if form.errors %}
+                    <div style="color: red; margin-bottom: 1em;">
+                        <strong>Erros ao salvar cliente:</strong>
+                        <ul>
+                        {% for field, errors in form.errors.items %}
+                            <li><strong>{{ field|capfirst }}:</strong> {{ errors|join:', ' }}</li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
                 <form method="post" action="{% url 'clientes:clientes' %}" class="clientes-form" id="clienteForm" data-validate>
                     {% csrf_token %}
                     <input type="hidden" name="id" id="cliente_id" value="">
@@ -210,7 +220,7 @@
 
 {% block extra_js %}
     {{ block.super }}
-    <script src="{% static 'clientes/js/clientes.js' %}?v={% now "U" %}"></script>
+    <script src="{% static 'clientes/js/clientes.js' %}"></script>
     <script>
         // Função global para carregar cliente - definida imediatamente
         function carregarCliente(clienteId) {

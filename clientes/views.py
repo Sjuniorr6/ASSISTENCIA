@@ -13,32 +13,39 @@ from django.views.decorators.cache import never_cache
 @never_cache
 @login_required
 def clientes_view(request):
-    """
-    Renderiza a página de clientes e lida com a criação de novos clientes.
-    """
+    if request.method == 'POST':
+        cliente_id = request.POST.get('id')
+        if cliente_id:
+            cliente = get_object_or_404(Clientes, id=cliente_id)
+            form = ClientesForm(request.POST, instance=cliente)
+            action = 'atualizado'
+        else:
+            form = ClientesForm(request.POST)
+            action = 'criado'
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Cliente {action} com sucesso!')
+        else:
+            messages.error(request, 'Erro ao salvar cliente. Verifique os dados.')
+        return redirect('clientes:clientes')
     # Busca
     search_name = request.GET.get('search_name', '')
     search_os = request.GET.get('search_os', '')
-    
-    # Query base
     clientes = Clientes.objects.all().order_by('-id')
-    
-    # Aplicar filtros de busca
     if search_name:
         clientes = clientes.filter(
             Q(nome__icontains=search_name) |
             Q(cpf_cnpj__icontains=search_name) |
             Q(telefone__icontains=search_name)
         )
-    
     if search_os:
         clientes = clientes.filter(numero_os__icontains=search_os)
-    
     context = {
         'clientes': clientes,
         'search_name': search_name,
         'search_os': search_os,
         'active_tab': 'clientes',
+        'form': ClientesForm(),
     }
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         html = render_to_string('clientes/partials/lista_clientes.html', context, request=request)
@@ -84,9 +91,10 @@ def carregar_mais_clientes(request):
 @never_cache
 @login_required
 def salvar_cliente(request):
+    print('>>> salvar_cliente chamado, método:', request.method)
     if request.method == 'POST':
+        print('>>> Dados recebidos:', request.POST)
         cliente_id = request.POST.get('id')
-        
         if cliente_id:
             # Atualizar cliente existente
             cliente = get_object_or_404(Clientes, id=cliente_id)
@@ -96,13 +104,16 @@ def salvar_cliente(request):
             # Criar novo cliente
             form = ClientesForm(request.POST)
             action = 'criado'
-        
+        print('>>> Form criado, válido?', form.is_valid())
         if form.is_valid():
             form.save()
+            print('>>> Cliente salvo com sucesso!')
             messages.success(request, f'Cliente {action} com sucesso!')
         else:
+            print('>>> Erros do form:', form.errors)
             messages.error(request, 'Erro ao salvar cliente. Verifique os dados.')
-    
+    else:
+        print('>>> Método não é POST')
     return redirect('clientes:clientes')
 
 @never_cache
