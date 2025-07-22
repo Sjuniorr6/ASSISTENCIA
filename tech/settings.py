@@ -165,7 +165,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login/Logout URLs
 LOGIN_URL = '/accounts/'
-LOGIN_REDIRECT_URL = 'home/'
+LOGIN_REDIRECT_URL = '/home/admin/'
 LOGOUT_REDIRECT_URL = '/accounts/'
 
 # Messages configuration
