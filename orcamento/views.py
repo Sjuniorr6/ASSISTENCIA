@@ -15,10 +15,12 @@ from django.db.models import Sum, Q
 from django.utils import timezone
 from datetime import timedelta
 from .models import Orcamento
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
-class OrcamentoListView(ListView):
+class OrcamentoListView(LoginRequiredMixin, ListView):
     model = Orcamento
     template_name = 'orcamento/orcamento.html'
     context_object_name = 'orcamentos'
@@ -87,6 +89,7 @@ class OrcamentoListView(ListView):
             messages.error(request, f'Erro ao salvar orçamento: {str(e)}')
             return self.get(request, *args, **kwargs)
 
+@login_required
 def orcamento_list(request):
     try:
         orcamentos = Orcamento.objects.all().order_by('-data')
@@ -95,6 +98,7 @@ def orcamento_list(request):
         print("Erro ao listar orçamentos:", str(e))
         return render(request, 'orcamento/orcamento.html', {'orcamentos': [], 'error': str(e)})
 
+@login_required
 @csrf_exempt
 def orcamento_detail(request, pk):
     try:
@@ -206,6 +210,7 @@ def orcamento_detail(request, pk):
             'message': str(e)
         }, status=500)
 
+@login_required
 @csrf_exempt
 def orcamento_create(request):
     if request.method == 'POST':
@@ -297,14 +302,17 @@ def orcamento_create(request):
     
     return JsonResponse({'status': 'error', 'message': 'Método não permitido'}, status=405)
 
+@login_required
 def orcamento_pdf(request, pk):
     orcamento = get_object_or_404(Orcamento, pk=pk)
     return JsonResponse({'status': 'success', 'message': 'Geração de PDF ainda não implementada'})
 
+@login_required
 def index(request):
     orcamentos = Orcamento.objects.all().order_by('-id')
     return render(request, 'orcamento/orcamento.html', {'orcamentos': orcamentos})
 
+@login_required
 @csrf_exempt
 @require_http_methods(["POST"])
 def criar_orcamento(request):
@@ -399,6 +407,7 @@ def criar_orcamento(request):
         'message': 'Método não permitido'
     }, status=405)
 
+@login_required
 @require_http_methods(["GET"])
 def get_orcamento(request, id):
     try:
@@ -429,6 +438,7 @@ def get_orcamento(request, id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
+@login_required
 @csrf_exempt
 @require_http_methods(["POST"])
 def atualizar_orcamento(request, id):
@@ -523,6 +533,7 @@ def atualizar_orcamento(request, id):
             'message': f'Erro ao atualizar orçamento: {str(e)}'
         }, status=400)
 
+@login_required
 def lista_orcamentos(request):
     search_name = request.GET.get('search_name', '')
     search_numero = request.GET.get('search_numero', '')
@@ -545,12 +556,14 @@ def lista_orcamentos(request):
     }
     return render(request, 'orcamento/orcamento.html', context)
 
+@login_required
 def novo_orcamento(request):
     if request.method == 'POST':
         return orcamento_create(request)
     
     return render(request, 'orcamento/novo_orcamento.html')
 
+@login_required
 def detalhe_orcamento(request, orcamento_id):
     orcamento = get_object_or_404(Orcamento, id=orcamento_id)
     itens = orcamento.itens.all()
@@ -590,6 +603,7 @@ def safe_decimal(value, default='0'):
     except:
         return Decimal(default)
 
+@login_required
 def salvar_orcamento(request):
     if request.method == 'POST':
         try:

@@ -4,10 +4,12 @@ from django.http import JsonResponse, Http404
 from django.apps import apps
 from django.db.models import Q
 from itertools import chain
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
-class PagamentosPendentesView(View):
+class PagamentosPendentesView(LoginRequiredMixin, View):
     def get(self, request):
         # Mapeia o nome do modelo para o campo de status correto
         status_field_map = {
@@ -174,6 +176,7 @@ class PagamentosPendentesView(View):
 
         return render(request, 'pagpendentes/pagpendentes.html', context)
 
+@login_required
 def marcar_como_pago(request):
     if request.method == 'POST':
         item_type = request.POST.get('content_type')

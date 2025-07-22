@@ -23,8 +23,8 @@ from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('accounts.urls', namespace='accounts')),
-    path('', include('home.urls', namespace='home')),
+    path('', include('accounts.urls', namespace='login')),
+    path('home/', include('home.urls', namespace='home')),
     path('home/', RedirectView.as_view(url='/', permanent=True)),
     path('clientes/', include('clientes.urls', namespace='clientes')),
     path('relatoriomanutencao/', include('relatoriomanutencao.urls')),

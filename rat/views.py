@@ -7,8 +7,10 @@ from .models import Rat, Clientes, RatEquipamento
 from .forms import RatForm
 from django.core import serializers
 import json
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
-class RatView(View):
+class RatView(LoginRequiredMixin, View):
     def get(self, request):
         search_name = request.GET.get('search_name')
         search_rat = request.GET.get('search_rat')
@@ -105,6 +107,7 @@ class RatView(View):
         }
         return render(request, 'rat/rat.html', context)
 
+@login_required
 def get_rat(request, rat_id):
     try:
         rat = get_object_or_404(Rat, id=rat_id)
@@ -163,6 +166,7 @@ def get_rat(request, rat_id):
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 
+@login_required
 def atualizar_rat(request, rat_id):
     rat = get_object_or_404(Rat, id=rat_id)
     if request.method == 'POST':
@@ -194,6 +198,7 @@ def atualizar_rat(request, rat_id):
             return redirect('rat:rat')
     return redirect('rat:rat')
 
+@login_required
 def excluir_rat(request, rat_id):
     rat = get_object_or_404(Rat, id=rat_id)
     if request.method == 'POST':
@@ -202,6 +207,7 @@ def excluir_rat(request, rat_id):
     # Adicionar tratamento para GET ou outros métodos
     return redirect('rat:rat')
 
+@login_required
 def get_cliente_data(request, cliente_id):
     try:
         cliente = get_object_or_404(Clientes, id=cliente_id)

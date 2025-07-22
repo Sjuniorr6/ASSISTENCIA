@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from .models import Estoque
@@ -6,6 +7,7 @@ from .forms import EstoqueForm
 from django.db.models import Q
 import json
 
+@login_required
 def estoque(request):
     if request.method == 'POST':
         form = EstoqueForm(request.POST)
@@ -36,6 +38,7 @@ def estoque(request):
     context = {'form': form, 'itens': itens}
     return render(request, 'estoque/estoque.html', context)
 
+@login_required
 def get_item_details(request, item_id):
     item = get_object_or_404(Estoque, id=item_id)
     data = {
@@ -51,6 +54,7 @@ def get_item_details(request, item_id):
     }
     return JsonResponse(data)
 
+@login_required
 def edit_item(request, item_id):
     item = get_object_or_404(Estoque, id=item_id)
     if request.method == 'POST':
@@ -63,6 +67,7 @@ def edit_item(request, item_id):
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
+@login_required
 def delete_item(request, item_id):
     item = get_object_or_404(Estoque, id=item_id)
     if request.method == 'POST':
@@ -70,6 +75,7 @@ def delete_item(request, item_id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
+@login_required
 def get_estoque(request, estoque_id):
     """Retorna os dados de um item do estoque para carregar no formulário"""
     try:
@@ -96,6 +102,7 @@ def get_estoque(request, estoque_id):
             'error': str(e)
         })
 
+@login_required
 def atualizar_estoque(request, estoque_id):
     """Atualiza um item do estoque"""
     if request.method == 'POST':

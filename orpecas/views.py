@@ -8,8 +8,10 @@ from .forms import OrpecasForm
 from decimal import Decimal
 from django.utils import timezone
 from datetime import timedelta
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class OrpecasView(View):
+class OrpecasView(LoginRequiredMixin, View):
     def get(self, request):
         search_name = request.GET.get('search_name', '')
         search_numero = request.GET.get('search_numero', '')
@@ -92,6 +94,7 @@ class OrpecasView(View):
         orpecas.valor_total_com_desconto = valor_total_orcamento - desconto
 
 
+@login_required
 def get_orpecas(request, orpecas_id):
     orpecas = get_object_or_404(Orpecas.objects.prefetch_related('itens'), id=orpecas_id)
     data = {
@@ -117,6 +120,7 @@ def get_orpecas(request, orpecas_id):
     }
     return JsonResponse(data)
 
+@login_required
 def atualizar_orpecas(request, orpecas_id):
     orpecas = get_object_or_404(Orpecas, id=orpecas_id)
     if request.method == 'POST':
@@ -129,6 +133,7 @@ def atualizar_orpecas(request, orpecas_id):
             return redirect('orpecas:orpecas')
     return redirect('orpecas:orpecas')
 
+@login_required
 def excluir_orpecas(request, orpecas_id):
     orpecas = get_object_or_404(Orpecas, id=orpecas_id)
     if request.method == 'POST':
