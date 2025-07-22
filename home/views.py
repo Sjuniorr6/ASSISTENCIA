@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 from orcamento.models import Orcamento
 from clientes.models import Clientes
 from django.utils import timezone
@@ -19,7 +21,7 @@ from datetime import date
 # Create your views here.
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
-    login_url = '/accounts/login/'
+    login_url = '/accounts/'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -263,6 +265,8 @@ class HomeView(LoginRequiredMixin, TemplateView):
         
         return {'labels': labels, 'data': data}
 
+@never_cache
+@login_required
 def index(request):
     return render(request, 'index.html')
 

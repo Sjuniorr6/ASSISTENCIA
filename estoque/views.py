@@ -6,7 +6,9 @@ from .models import Estoque
 from .forms import EstoqueForm
 from django.db.models import Q
 import json
+from django.views.decorators.cache import never_cache
 
+@never_cache
 @login_required
 def estoque(request):
     if request.method == 'POST':
@@ -38,6 +40,7 @@ def estoque(request):
     context = {'form': form, 'itens': itens}
     return render(request, 'estoque/estoque.html', context)
 
+@never_cache
 @login_required
 def get_item_details(request, item_id):
     item = get_object_or_404(Estoque, id=item_id)
@@ -54,6 +57,7 @@ def get_item_details(request, item_id):
     }
     return JsonResponse(data)
 
+@never_cache
 @login_required
 def edit_item(request, item_id):
     item = get_object_or_404(Estoque, id=item_id)
@@ -67,6 +71,7 @@ def edit_item(request, item_id):
             return JsonResponse({'success': False, 'errors': form.errors})
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
+@never_cache
 @login_required
 def delete_item(request, item_id):
     item = get_object_or_404(Estoque, id=item_id)
@@ -75,6 +80,7 @@ def delete_item(request, item_id):
         return JsonResponse({'success': True})
     return JsonResponse({'success': False, 'errors': 'Invalid request method'})
 
+@never_cache
 @login_required
 def get_estoque(request, estoque_id):
     """Retorna os dados de um item do estoque para carregar no formulário"""
@@ -102,6 +108,7 @@ def get_estoque(request, estoque_id):
             'error': str(e)
         })
 
+@never_cache
 @login_required
 def atualizar_estoque(request, estoque_id):
     """Atualiza um item do estoque"""

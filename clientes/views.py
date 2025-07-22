@@ -8,7 +8,9 @@ from .forms import ClientesForm
 import json
 from django.template.loader import render_to_string
 from django.http import HttpResponse
+from django.views.decorators.cache import never_cache
 
+@never_cache
 @login_required
 def clientes_view(request):
     """
@@ -43,6 +45,7 @@ def clientes_view(request):
         return HttpResponse(html)
     return render(request, 'clientes/clientes.html', context)
 
+@never_cache
 @login_required
 def carregar_mais_clientes(request):
     """View para carregar mais clientes via AJAX (scroll infinito)"""
@@ -78,6 +81,7 @@ def carregar_mais_clientes(request):
         'total_count': clientes.count()
     })
 
+@never_cache
 @login_required
 def salvar_cliente(request):
     if request.method == 'POST':
@@ -101,6 +105,7 @@ def salvar_cliente(request):
     
     return redirect('clientes:clientes')
 
+@never_cache
 @login_required
 def get_cliente(request, cliente_id):
     """
@@ -136,6 +141,7 @@ def get_cliente(request, cliente_id):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
+@never_cache
 @login_required
 def atualizar_cliente(request, cliente_id):
     """

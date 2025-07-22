@@ -20,10 +20,11 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('accounts.urls', namespace='login')),
+    path('', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('home/', include('home.urls', namespace='home')),
     path('home/', RedirectView.as_view(url='/', permanent=True)),
     path('clientes/', include('clientes.urls', namespace='clientes')),
@@ -34,6 +35,7 @@ urlpatterns = [
     path('pagpendentes/', include('pagpendentes.urls', namespace='pagpendentes')),
     path('agenda/', include('agenda.urls', namespace='agenda')),
     path('estoque/', include('estoque.urls')),
+    path('accounts/', include('accounts.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

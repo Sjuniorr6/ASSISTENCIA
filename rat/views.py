@@ -9,6 +9,7 @@ from django.core import serializers
 import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
 class RatView(LoginRequiredMixin, View):
     def get(self, request):
@@ -107,6 +108,7 @@ class RatView(LoginRequiredMixin, View):
         }
         return render(request, 'rat/rat.html', context)
 
+@never_cache
 @login_required
 def get_rat(request, rat_id):
     try:
@@ -166,6 +168,7 @@ def get_rat(request, rat_id):
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
 
 
+@never_cache
 @login_required
 def atualizar_rat(request, rat_id):
     rat = get_object_or_404(Rat, id=rat_id)
@@ -198,6 +201,7 @@ def atualizar_rat(request, rat_id):
             return redirect('rat:rat')
     return redirect('rat:rat')
 
+@never_cache
 @login_required
 def excluir_rat(request, rat_id):
     rat = get_object_or_404(Rat, id=rat_id)
@@ -207,6 +211,7 @@ def excluir_rat(request, rat_id):
     # Adicionar tratamento para GET ou outros métodos
     return redirect('rat:rat')
 
+@never_cache
 @login_required
 def get_cliente_data(request, cliente_id):
     try:

@@ -10,6 +10,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.cache import never_cache
 
 class OrpecasView(LoginRequiredMixin, View):
     def get(self, request):
@@ -94,6 +95,7 @@ class OrpecasView(LoginRequiredMixin, View):
         orpecas.valor_total_com_desconto = valor_total_orcamento - desconto
 
 
+@never_cache
 @login_required
 def get_orpecas(request, orpecas_id):
     orpecas = get_object_or_404(Orpecas.objects.prefetch_related('itens'), id=orpecas_id)
@@ -120,6 +122,7 @@ def get_orpecas(request, orpecas_id):
     }
     return JsonResponse(data)
 
+@never_cache
 @login_required
 def atualizar_orpecas(request, orpecas_id):
     orpecas = get_object_or_404(Orpecas, id=orpecas_id)
@@ -133,6 +136,7 @@ def atualizar_orpecas(request, orpecas_id):
             return redirect('orpecas:orpecas')
     return redirect('orpecas:orpecas')
 
+@never_cache
 @login_required
 def excluir_orpecas(request, orpecas_id):
     orpecas = get_object_or_404(Orpecas, id=orpecas_id)

@@ -6,6 +6,7 @@ from django.db.models import Q
 from itertools import chain
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 
@@ -176,6 +177,7 @@ class PagamentosPendentesView(LoginRequiredMixin, View):
 
         return render(request, 'pagpendentes/pagpendentes.html', context)
 
+@never_cache
 @login_required
 def marcar_como_pago(request):
     if request.method == 'POST':

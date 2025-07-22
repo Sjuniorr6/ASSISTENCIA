@@ -6,11 +6,13 @@ from .models import AgendaDia, Visita
 from .forms import VisitaForm
 from datetime import timedelta, date
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 
 # Página principal da agenda
 
+@never_cache
 @login_required
 def agenda_home(request):
     hoje = timezone.localdate()
@@ -36,6 +38,7 @@ def agenda_home(request):
 
 # Visualizar um dia específico
 
+@never_cache
 @login_required
 def agenda_dia(request, data):
     data_obj = date.fromisoformat(data)
@@ -52,6 +55,7 @@ def agenda_dia(request, data):
 
 # Agendar nova visita
 
+@never_cache
 @login_required
 def agendar_visita(request):
     if request.method == 'POST':
@@ -70,6 +74,7 @@ def agendar_visita(request):
 
 # Placeholder para geração de PDF
 
+@never_cache
 @login_required
 def relatorio_pdf(request):
     messages.info(request, 'Funcionalidade de relatório PDF em desenvolvimento.')

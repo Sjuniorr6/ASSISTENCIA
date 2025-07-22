@@ -17,6 +17,7 @@ from datetime import timedelta
 from .models import Orcamento
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.decorators.cache import never_cache
 
 # Create your views here.
 
@@ -89,6 +90,7 @@ class OrcamentoListView(LoginRequiredMixin, ListView):
             messages.error(request, f'Erro ao salvar orçamento: {str(e)}')
             return self.get(request, *args, **kwargs)
 
+@never_cache
 @login_required
 def orcamento_list(request):
     try:
@@ -98,6 +100,7 @@ def orcamento_list(request):
         print("Erro ao listar orçamentos:", str(e))
         return render(request, 'orcamento/orcamento.html', {'orcamentos': [], 'error': str(e)})
 
+@never_cache
 @login_required
 @csrf_exempt
 def orcamento_detail(request, pk):
@@ -210,6 +213,7 @@ def orcamento_detail(request, pk):
             'message': str(e)
         }, status=500)
 
+@never_cache
 @login_required
 @csrf_exempt
 def orcamento_create(request):
@@ -302,16 +306,19 @@ def orcamento_create(request):
     
     return JsonResponse({'status': 'error', 'message': 'Método não permitido'}, status=405)
 
+@never_cache
 @login_required
 def orcamento_pdf(request, pk):
     orcamento = get_object_or_404(Orcamento, pk=pk)
     return JsonResponse({'status': 'success', 'message': 'Geração de PDF ainda não implementada'})
 
+@never_cache
 @login_required
 def index(request):
     orcamentos = Orcamento.objects.all().order_by('-id')
     return render(request, 'orcamento/orcamento.html', {'orcamentos': orcamentos})
 
+@never_cache
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -407,6 +414,7 @@ def criar_orcamento(request):
         'message': 'Método não permitido'
     }, status=405)
 
+@never_cache
 @login_required
 @require_http_methods(["GET"])
 def get_orcamento(request, id):
@@ -438,6 +446,7 @@ def get_orcamento(request, id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 
+@never_cache
 @login_required
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -533,6 +542,7 @@ def atualizar_orcamento(request, id):
             'message': f'Erro ao atualizar orçamento: {str(e)}'
         }, status=400)
 
+@never_cache
 @login_required
 def lista_orcamentos(request):
     search_name = request.GET.get('search_name', '')
@@ -556,6 +566,7 @@ def lista_orcamentos(request):
     }
     return render(request, 'orcamento/orcamento.html', context)
 
+@never_cache
 @login_required
 def novo_orcamento(request):
     if request.method == 'POST':
@@ -563,6 +574,7 @@ def novo_orcamento(request):
     
     return render(request, 'orcamento/novo_orcamento.html')
 
+@never_cache
 @login_required
 def detalhe_orcamento(request, orcamento_id):
     orcamento = get_object_or_404(Orcamento, id=orcamento_id)
@@ -603,6 +615,7 @@ def safe_decimal(value, default='0'):
     except:
         return Decimal(default)
 
+@never_cache
 @login_required
 def salvar_orcamento(request):
     if request.method == 'POST':
