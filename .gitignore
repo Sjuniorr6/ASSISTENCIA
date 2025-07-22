@@ -71,6 +71,9 @@ ENV/
 
 # Ignore migrations
 */migrations/*
-!*/migrations/__init__.py db.sqlite3
-db.sqlite3
-db.sqlite3
+!*/migrations/__init__.py 
+# Ignore banco SQLite
+db.
+# Ignore migrations
+*/migrations/*
+!*/migrations/__init__.py
