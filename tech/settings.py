@@ -166,9 +166,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login/Logout URLs
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGIN_URL = '/accounts/'
+LOGIN_REDIRECT_URL = '/home/admin/'
+LOGOUT_REDIRECT_URL = '/accounts/'
 
 # Messages configuration
 from django.contrib.messages import constants as messages
