@@ -1,0 +1,50 @@
+{% if itens %}
+    <div class="space-y-3 p-4">
+        {% for item in itens %}
+            <div class="estoque-list-item bg-white rounded-lg shadow-sm border border-gray-200 p-4 cursor-pointer hover:shadow-md transition-all duration-200"
+                 onclick="carregarEstoque({{ item.id }})">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="col-span-1">
+                        <div class="text-sm font-medium text-gray-500">Nº Registro</div>
+                        <div class="text-sm text-gray-900">{{ item.id }}</div>
+                    </div>
+                    <div class="col-span-1">
+                        <div class="text-sm font-medium text-gray-500">Status</div>
+                        <div class="text-sm status-{{ item.status }}">{{ item.get_status_display }}</div>
+                    </div>
+                    <div class="col-span-1">
+                        <div class="text-sm font-medium text-gray-500">Data Entrada</div>
+                        <div class="text-sm text-gray-900">{{ item.data_entrada|date:"d/m/Y" }}</div>
+                    </div>
+                    <div class="col-span-1">
+                        <div class="text-sm font-medium text-gray-500">Nome da Peça</div>
+                        <div class="text-sm text-gray-900 font-medium">{{ item.nome_peca }}</div>
+                    </div>
+                </div>
+                {% if item.codigo or item.modelo %}
+                    <div class="mt-3 pt-3 border-t border-gray-100">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {% if item.codigo %}
+                                <div>
+                                    <div class="text-xs font-medium text-gray-500">Código</div>
+                                    <div class="text-xs text-gray-700">{{ item.codigo }}</div>
+                                </div>
+                            {% endif %}
+                            {% if item.modelo %}
+                                <div>
+                                    <div class="text-xs font-medium text-gray-500">Modelo</div>
+                                    <div class="text-xs text-gray-700">{{ item.modelo }}</div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="p-6 text-center text-gray-500">
+        <div class="text-lg font-medium mb-2">Nenhum item encontrado</div>
+        <div class="text-sm">Tente ajustar os filtros de pesquisa</div>
+    </div>
+{% endif %} 

@@ -1,0 +1,14 @@
+{% for cliente in clientes %}
+<div class="px-6 py-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors client-list-item" onclick="carregarCliente('{{ cliente.pk }}');">
+    <div class="grid grid-cols-5 gap-4 text-sm">
+        <div class="text-gray-900 font-medium">{{ cliente.numero_os|default_if_none:"N/A" }}</div>
+        <div class="{% if cliente.status_servico == 'agendado' %}text-gray-600{% elif cliente.status_servico == 'pendente_pagamento' %}text-yellow-600{% elif cliente.status_servico == 'finalizado' %}text-green-600{% elif cliente.status_servico == 'cancelado' %}text-red-600{% endif %} font-medium">
+            {{ cliente.get_status_servico_display|default_if_none:"N/A" }}
+        </div>
+        <div class="text-gray-600">{{ cliente.data_chamado|date:"d/m/Y"|default_if_none:"N/A" }}</div>
+        <div class="text-gray-900 col-span-2">{{ cliente.nome|default_if_none:"N/A" }}</div>
+    </div>
+</div>
+{% empty %}
+<div class="px-6 py-4 text-gray-500 text-center">Nenhum cliente encontrado.</div>
+{% endfor %} 

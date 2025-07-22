@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tech Projects - RAT{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'rat/css/rat.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Main Layout -->
+    <div class="flex flex-col-reverse lg:flex-row gap-6">
+        <!-- Left Column - Form (60%) -->
+        <div id="form-column" class="lg:w-3/5 space-y-6">
+            <div class="bg-slate-200 rounded-lg shadow-lg p-6 compact-form">
+                <form method="post" action="{% url 'rat:rat' %}" class="rat-form" id="ratForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" id="rat_id" value="">
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-800" id="formTitle">Novo RAelatorio de Assistencia Técnica</h3>
+                        <div class="flex gap-2">
+                            <button type="button" id="gerarPdfBtn" class="btn-secondary text-sm">Gerar PDF</button>
+                            <a href="{% url 'rat:rat' %}" id="cancelEdit" class="btn-secondary text-sm" style="display: none;">Voltar</a>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Informações Gerais -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Número RAT</label>
+                            <input type="text" name="numero_rat" id="numero_rat" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data da Visita</label>
+                            <input type="date" name="data_visita" id="data_visita" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select name="status" id="status" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                {% for key, value in form.status.field.choices %}
+                                    <option value="{{ key }}">{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Informações do Cliente -->
+                    <div class="border-t pt-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações do Cliente</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+                                <select name="cliente" id="cliente" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500" data-get-cliente-url-template="{% url 'rat:get_cliente_data' 0 %}">
+                                    <option value="">Selecione um cliente</option>
+                                    {% for cliente in clientes %}
+                                        <option value="{{ cliente.id }}">{{ cliente.nome }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                                <input type="text" name="cliente_nome" id="cliente_nome" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">CPF/CNPJ</label>
+                                <input type="text" name="cliente_cpf_cnpj" id="cliente_cpf_cnpj" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                            </div>
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                            <input type="text" name="cliente_telefone" id="cliente_telefone" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Celular</label>
+                            <input type="text" name="cliente_celular" id="cliente_celular" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" name="cliente_email" id="cliente_email" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
+                            <input type="text" name="cliente_endereco" id="cliente_endereco" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Bairro</label>
+                            <input type="text" name="cliente_bairro" id="cliente_bairro" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
+                            <input type="text" name="cliente_cidade" id="cliente_cidade" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">CEP</label>
+                            <input type="text" name="cliente_cep" id="cliente_cep" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                        </div>
+                    </div>
+                    
+                    <!-- Informações do Equipamento -->
+                    <div class="border-t pt-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações do Equipamento</h3>
+                        <div class="flex justify-between items-center mb-4">
+                            <span></span>
+                            <button type="button" id="adicionar-equipamento" class="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">Adicionar Equipamento</button>
+                        </div>
+                        <div id="equipamentos-container"></div>
+                        <!-- Template oculto para bloco de equipamento -->
+                        <div id="equipamento-template" class="hidden">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Equipamento</label>
+                                    <input type="text" name="equipamento[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Fabricante</label>
+                                    <input type="text" name="fabricante[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
+                                    <input type="text" name="modelo[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Número de Série</label>
+                                    <input type="text" name="numero_serie[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Data da Instalação</label>
+                                    <input type="date" name="data_instalacao[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Data da Compra</label>
+                                    <input type="date" name="data_compra[]" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                </div>
+                            </div>
+                            <div class="flex justify-end mb-4">
+                                <button type="button" class="remover-equipamento px-2 py-1 bg-red-500 text-white rounded hover:bg-red-700 text-xs">Remover</button>
+                            </div>
+                            <hr class="mb-4">
+                        </div>
+                    </div>
+
+                    <!-- Detalhes do Serviço -->
+                    <div class="border-t pt-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Detalhes do Serviço</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Serviço</label>
+                                 <select name="tipo_servico" id="tipo_servico" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                     {% for key, value in form.tipo_servico.field.choices %}
+                                        <option value="{{ key }}">{{ value }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Equipe Técnica</label>
+                                <input type="text" name="equipe_tecnica" id="equipe_tecnica" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Serviço a Executar</label>
+                            <textarea name="servico_a_executar" id="servico_a_executar" rows="3" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500"></textarea>
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Relatório Interno</label>
+                            <textarea name="relatorio_interno" id="relatorio_interno" rows="3" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" class="btn-primary" id="submitBtn">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column - Client List and Search (40%) -->
+        <div id="list-column" class="lg:w-2/5 space-y-6">
+            <!-- Search Section -->
+            <div class="bg-slate-200 rounded-lg shadow-lg p-6 compact-form">
+                <form method="get" action="{% url 'rat:rat' %}">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Pesquisar</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">PESQUISAR NOME</label>
+                            <input type="text" name="search_name" id="search-name-input" value="{{ search_name }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">BUSCAR NÚMERO RAT</label>
+                            <input type="text" name="search_rat" id="search-rat-input" value="{{ search_rat }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- RAT List -->
+            <div id="rat-list-container" 
+                 data-get-url-template="{% url 'rat:get_rat' 0 %}"
+                 data-update-url-template="{% url 'rat:atualizar_rat' 0 %}"
+                 class="bg-white rounded-lg shadow-lg compact-form overflow-hidden">
+                <div class="p-6 border-b bg-slate-200">
+                    <h2 class="text-xl font-bold text-gray-800">Listagem de RATs</h2>
+                </div>
+                <div id="rat-list-results" class="max-h-96 overflow-y-auto">
+                    {% include 'rat/partials/lista_rats.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'rat/js/rat.js' %}?v={% now "U" %}"></script>
+{% endblock %} 

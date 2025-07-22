@@ -1,0 +1,328 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tech Projects - Controle de Estoque{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'estoque/css/estoque.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mb-6 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Main Layout -->
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Left Column - Form (60%) -->
+        <div id="form-column" class="lg:w-3/5 space-y-6">
+            <!-- Estoque Form -->
+            <div class="bg-slate-200 rounded-lg shadow-lg p-6 compact-form">
+                <form method="post" action="{% url 'estoque:estoque' %}" class="estoque-form" id="estoqueForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" id="estoque_id" value="">
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-800" id="formTitle">Nova Peça</h3>
+                        <div class="flex gap-2">
+                            <button type="button" id="cancelEdit" class="btn-secondary text-sm" style="display: none;">Voltar</button>
+                            <button type="button" id="limparForm" class="btn-secondary text-sm">Limpar</button>
+                        </div>
+                    </div>
+
+                    <!-- Informações Básicas -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Número de Registro</label>
+                            <input type="text" name="id_registro" id="id_registro" readonly class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <div id="status_display" class="w-full py-1 text-sm text-gray-600"></div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Código</label>
+                            <input type="text" name="codigo" id="codigo" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Modelo</label>
+                            <input type="text" name="modelo" id="modelo" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Fornecedor</label>
+                            <input type="text" name="fornecedor" id="fornecedor" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data de Entrada</label>
+                            <input type="date" name="data_entrada" id="data_entrada" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome da Peça</label>
+                            <input type="text" name="nome_peca" id="nome_peca" required class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="border-t pt-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Status da Solicitação</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <label class="flex items-center">
+                                <input type="radio" name="status" value="disponivel" class="mr-2">
+                                <span class="text-sm text-gray-700">Disponível</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="status" value="em_uso" class="mr-2">
+                                <span class="text-sm text-gray-700">Em Uso</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="status" value="reservado" class="mr-2">
+                                <span class="text-sm text-gray-700">Reservado</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="border-t pt-6 mb-6">
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+                                <textarea name="descricao" id="descricao" rows="3" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" class="btn-primary" id="submitBtn">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column - Estoque List and Search (40%) -->
+        <div id="list-column" class="lg:w-2/5 space-y-6">
+            <!-- Search Section -->
+            <div class="bg-slate-200 rounded-lg shadow-lg p-6 compact-form">
+                <form method="get">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Pesquisar</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">PESQUISAR NOME</label>
+                            <input type="text" name="search_name" id="search-name-input" value="{{ search_name }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">NÚMERO DE REGISTRO</label>
+                            <input type="text" name="search_registro" id="search-registro-input" value="{{ search_registro }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        
+                        <div class="flex items-end">
+                            <button type="submit" class="btn-secondary w-full mt-4">Pesquisar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Estoque List -->
+            <div id="estoque-list-container" 
+                 data-get-url-template="{% url 'estoque:get_estoque' 0 %}"
+                 data-update-url-template="{% url 'estoque:atualizar_estoque' 0 %}"
+                 class="bg-white rounded-lg shadow-lg compact-form overflow-hidden">
+                <div class="p-6 border-b bg-slate-200">
+                    <h2 class="text-xl font-bold text-gray-800">Listagem de Estoque</h2>
+                </div>
+                <div id="estoque-list-results" class="max-h-96 overflow-y-auto">
+                    {% include 'estoque/partials/lista_estoque.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'estoque/js/estoque.js' %}?v={% now "U" %}"></script>
+    <script>
+        // Função global para carregar estoque - definida imediatamente
+        function carregarEstoque(estoqueId) {
+            console.log('=== CARREGANDO ESTOQUE ===');
+            console.log('ID do estoque:', estoqueId);
+            
+            // Verifica se os elementos necessários estão disponíveis
+            const form = document.getElementById('estoqueForm');
+            const formTitle = document.getElementById('formTitle');
+            const submitBtn = document.getElementById('submitBtn');
+            const estoqueIdField = document.getElementById('estoque_id');
+            const cancelBtn = document.getElementById('cancelEdit');
+            const listContainer = document.getElementById('estoque-list-container');
+            
+            if (!form || !formTitle || !submitBtn || !estoqueIdField || !listContainer) {
+                console.error('Elementos necessários não encontrados!');
+                alert('Erro: Elementos da página não carregados corretamente.');
+                return;
+            }
+            
+            const CREATE_URL = form.action;
+            const UPDATE_URL_TEMPLATE = listContainer.dataset.updateUrlTemplate;
+            const GET_ESTOQUE_URL_TEMPLATE = listContainer.dataset.getUrlTemplate;
+            
+            if (!GET_ESTOQUE_URL_TEMPLATE) {
+                console.error('URL template não encontrada!');
+                alert('Erro de configuração: URL de busca não encontrada.');
+                return;
+            }
+            
+            const fetchUrl = GET_ESTOQUE_URL_TEMPLATE.replace('0', estoqueId);
+            console.log('URL de busca:', fetchUrl);
+
+            // Mostra loading
+            formTitle.textContent = 'Carregando...';
+            
+            fetch(fetchUrl)
+                .then(response => {
+                    console.log('Status da resposta:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Dados recebidos:', data);
+                    
+                    if (data.success && data.estoque) {
+                        const estoque = data.estoque;
+                        console.log('Estoque encontrado:', estoque);
+                        
+                        // Lista de campos para preencher
+                        const campos = [
+                            'id_registro', 'codigo', 'modelo', 'fornecedor', 
+                            'data_entrada', 'nome_peca', 'descricao'
+                        ];
+                        
+                        console.log('Preenchendo campos...');
+                        campos.forEach(campo => {
+                            const elemento = document.getElementById(campo);
+                            if (elemento && estoque[campo] !== null && estoque[campo] !== undefined) {
+                                elemento.value = estoque[campo];
+                                console.log(`Campo ${campo} preenchido:`, estoque[campo]);
+                            } else {
+                                console.log(`Campo ${campo} não encontrado ou vazio:`, estoque[campo]);
+                            }
+                        });
+                        
+                        // Define o status display
+                        const statusDisplay = document.getElementById('status_display');
+                        if (statusDisplay && estoque.status_display) {
+                            statusDisplay.textContent = estoque.status_display;
+                        }
+                        
+                        // Define o radio button do status
+                        if (estoque.status) {
+                            const statusRadio = document.querySelector(`input[name="status"][value="${estoque.status}"]`);
+                            if (statusRadio) {
+                                statusRadio.checked = true;
+                            }
+                        }
+                        
+                        // Define o ID oculto
+                        estoqueIdField.value = estoque.id;
+                        
+                        // Muda para modo de edição
+                        formTitle.textContent = `Editar Peça: ${estoque.nome_peca || 'Peça'}`;
+                        submitBtn.textContent = 'Atualizar';
+                        submitBtn.className = 'btn-primary';
+                        cancelBtn.style.display = 'inline-block';
+                        
+                        // Define a URL de atualização se disponível
+                        if (UPDATE_URL_TEMPLATE) {
+                            form.action = UPDATE_URL_TEMPLATE.replace('0', estoque.id);
+                        } else {
+                            form.action = CREATE_URL; // Fallback
+                        }
+                        
+                        // Scroll para o formulário
+                        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        
+                        console.log('=== ESTOQUE CARREGADO COM SUCESSO ===');
+                    } else {
+                        console.error('Resposta inválida:', data);
+                        alert(`Erro ao carregar estoque: ${data.error || 'Resposta inválida do servidor'}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro na requisição:', error);
+                    alert(`Erro ao carregar estoque: ${error.message}`);
+                    formTitle.textContent = 'Nova Peça';
+                });
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchNameInput = document.getElementById('search-name-input');
+            const searchRegistroInput = document.getElementById('search-registro-input');
+            const resultsContainer = document.getElementById('estoque-list-results');
+            const searchFormUrl = "{% url 'estoque:estoque' %}";
+    
+            // Função para evitar buscas a cada tecla pressionada
+            const debounce = (func, delay) => {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                    }, delay);
+                };
+            };
+    
+            const performSearch = () => {
+                const searchName = searchNameInput.value;
+                const searchRegistro = searchRegistroInput.value;
+    
+                // Indicador visual de carregamento
+                resultsContainer.innerHTML = '<div class="p-6 text-center text-gray-500">Buscando...</div>';
+    
+                const url = `${searchFormUrl}?search_name=${encodeURIComponent(searchName)}&search_registro=${encodeURIComponent(searchRegistro)}`;
+                
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Erro na busca:', error);
+                    resultsContainer.innerHTML = '<div class="p-6 text-center text-red-500">Erro ao carregar resultados.</div>';
+                });
+            };
+    
+            const debouncedSearch = debounce(performSearch, 300);
+    
+            if(searchNameInput) searchNameInput.addEventListener('input', debouncedSearch);
+            if(searchRegistroInput) searchRegistroInput.addEventListener('input', debouncedSearch);
+    
+            // Oculta o botão de pesquisa original, pois a busca agora é automática
+            const searchButton = document.querySelector('form[method="get"] button[type="submit"]');
+            if(searchButton) {
+                searchButton.style.display = 'none';
+            }
+        });
+    </script>
+{% endblock %} 

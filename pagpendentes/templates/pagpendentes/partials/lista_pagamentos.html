@@ -1,0 +1,35 @@
+<!-- Header for the list -->
+<div class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-xs font-medium text-gray-500 uppercase tracking-wider sticky top-0 z-10">
+    <div class="grid grid-cols-6 gap-4">
+        <div class="col-span-1">Tipo</div>
+        <div class="col-span-1">Data</div>
+        <div class="col-span-1">Número</div>
+        <div class="col-span-2">Cliente</div>
+        <div class="col-span-1 text-right">Valor</div>
+    </div>
+</div>
+
+{% for item in pending_items %}
+<div class="payment-item px-6 py-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition-colors" 
+    data-id="{{ item.id }}" 
+    data-type="{{ item.content_type }}"
+    data-tipo-documento="{{ item.display_type_verbose|default_if_none:'' }}"
+    data-data-servico="{{ item.display_data|date:"d/m/Y"|default_if_none:'' }}"
+    data-status="{{ item.display_status|default_if_none:'' }}"
+    data-nome="{{ item.display_cliente_nome|default_if_none:'' }}"
+    data-valor-total="{{ item.display_valor|default_if_none:'' }}">
+    
+    <div class="grid grid-cols-6 gap-4 text-sm">
+        <div class="col-span-1 text-gray-700 font-medium">{{ item.display_type_verbose|default_if_none:"N/A" }}</div>
+        <div class="col-span-1 text-gray-600">{{ item.display_data|date:"d/m/Y"|default_if_none:"N/A" }}</div>
+        <div class="col-span-1 text-gray-900 font-medium">{{ item.display_numero|default_if_none:"N/A" }}</div>
+        <div class="col-span-2 text-gray-900">{{ item.display_cliente_nome|default_if_none:"N/A" }}</div>
+        <div class="col-span-1 text-right font-semibold text-gray-800">R$ {{ item.display_valor|floatformat:2|default_if_none:"0.00" }}</div>
+    </div>
+</div>
+{% empty %}
+<div class="px-6 py-10 text-gray-500 text-center">
+    <p class="text-lg">Nenhum pagamento pendente encontrado.</p>
+    <p class="text-sm">Parece que todas as contas estão em dia!</p>
+</div>
+{% endfor %} 

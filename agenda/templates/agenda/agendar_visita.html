@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Agendar Visita{% endblock %}
+
+{% block content %}
+<div class="max-w-lg mx-auto bg-white rounded-lg shadow p-6 mt-6">
+    <h2 class="text-2xl font-bold mb-4">Agendar Nova Visita</h2>
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div>
+            <label for="data" class="block font-semibold mb-1">Data</label>
+            <input type="date" name="data" id="data" required class="form-input w-full" value="{{ request.POST.data|default:'' }}">
+        </div>
+        {{ form.as_p }}
+        <div class="flex justify-end gap-2">
+            <a href="{% url 'agenda:home' %}" class="btn">Cancelar</a>
+            <button type="submit" class="btn btn-primary-base">Salvar</button>
+        </div>
+    </form>
+</div>
+{% endblock %} 

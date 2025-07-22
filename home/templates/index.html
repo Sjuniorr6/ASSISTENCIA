@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Bem-vindo ao Tech Projects{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center animate-fade-in bg-[#1e293b]">
+    <img src="{% static 'img/tech.png' %}" alt="Tech Projects" class="h-40 w-auto mt-10 mb-10" />
+    <h1 class="text-4xl sm:text-2xl font-extrabold mb-4 drop-shadow-lg bg-gradient-to-r from-indigo-600 via-blue-500 to-purple-600 bg-clip-text text-transparent text-center mt-10">Bem-vindo ao <span class="text-indigo-100">Tech Projects</span></h1>
+    <p class="text-lg text-white mb-4 text-center max-w-2xl mt-4">Sistema integrado e moderno para gestão de clientes, orçamentos, agendamentos, estoque e muito mais. Tudo em um só lugar, com interface responsiva e fácil de usar.</p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 w-full max-w-3xl px-2 mt-4">
+        <a href="{% url 'home:home' %}" class="group flex items-center bg-white rounded-lg shadow-lg p-4 sm:p-6 gap-4 hover:scale-105 hover:shadow-2xl transition-all duration-300 focus:ring-2 focus:ring-indigo-400 outline-none">
+            <i class="fas fa-chart-line text-3xl text-indigo-600 group-hover:scale-110 transition-transform"></i>
+            <div>
+                <h3 class="font-bold text-slate-800">Dashboard Interativo</h3>
+                <p class="text-gray-500 text-sm">Indicadores, gráficos e visão geral do negócio em tempo real.</p>
+            </div>
+        </a>
+        <a href="{% url 'clientes:clientes' %}" class="group flex items-center bg-white rounded-lg shadow-lg p-4 sm:p-6 gap-4 hover:scale-105 hover:shadow-2xl transition-all duration-300 focus:ring-2 focus:ring-blue-400 outline-none">
+            <span class="text-3xl font-bold text-blue-600">{{ os_abertas }}</span>
+            <div>
+                <h3 class="font-bold text-slate-800">OS abertas</h3>
+                <p class="text-gray-500 text-sm">Ordens de serviço abertas nos últimos 30 dias.</p>
+            </div>
+        </a>
+        <a href="{% url 'agenda:home' %}" class="group flex items-center bg-white rounded-lg shadow-lg p-4 sm:p-6 gap-4 hover:scale-105 hover:shadow-2xl transition-all duration-300 focus:ring-2 focus:ring-green-400 outline-none">
+            <i class="fas fa-calendar-check text-3xl text-green-600 group-hover:scale-110 transition-transform"></i>
+            <div>
+                <h3 class="font-bold text-slate-800">Agendamento de Visitas</h3>
+                <p class="text-gray-500 text-sm">Organize e visualize compromissos de forma prática e visual.</p>
+            </div>
+        </a>
+        <a href="{% url 'estoque:estoque' %}" class="group flex items-center bg-white rounded-lg shadow-lg p-4 sm:p-6 gap-4 hover:scale-105 hover:shadow-2xl transition-all duration-300 focus:ring-2 focus:ring-yellow-400 outline-none">
+            <i class="fas fa-cogs text-3xl text-yellow-600 group-hover:scale-110 transition-transform"></i>
+            <div>
+                <h3 class="font-bold text-slate-800">Controle de Estoque e Peças</h3>
+                <p class="text-gray-500 text-sm">Gerencie materiais, orçamentos, RAT e pagamentos pendentes.</p>
+            </div>
+        </a>
+    </div>
+    <a href="{% url 'home:home' %}" class="btn btn-primary-base text-lg animate-fade-in shadow-lg hover:shadow-2xl transition-all duration-300 mt-4">Ir para o Dashboard</a>
+</div>
+
+<style>
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade-in { animation: fade-in 1s ease; }
+@media (max-width: 640px) {
+  h1 {
+    font-size: 2rem !important;
+  }
+}
+</style>
+{% endblock %} 

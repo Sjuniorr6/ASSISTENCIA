@@ -1,0 +1,644 @@
+/* Usando o mesmo fundo escuro do body em base.html */
+.container-fluid {
+    color: #cbd5e1; /* slate-300 */
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #94a3b8; /* slate-400 */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Layout Principal */
+.main-layout {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 3rem;
+}
+
+.form-section {
+    grid-column: 1 / 2;
+}
+
+.actions-section {
+    grid-column: 2 / 3;
+    padding-top: 3.5rem; /* Alinhar com o início do formulário */
+}
+
+/* Grade do Formulário */
+.form-grid {
+    display: grid;
+    grid-template-columns: 140px 1fr; /* Label e input */
+    gap: 1rem 1.5rem;
+    align-items: center;
+}
+
+.form-grid label {
+    font-weight: 500;
+    text-align: left;
+}
+
+.form-grid .form-control,
+.form-grid textarea,
+.form-grid .status-display {
+    background-color: #334155; /* slate-700 */
+    border: 1px solid #475569; /* slate-600 */
+    color: #f1f5f9; /* slate-100 */
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-grid .form-control[readonly] {
+    background-color: #475569; /* slate-600 */
+}
+
+.form-grid textarea {
+    min-height: 120px;
+    grid-column: 2 / 3;
+}
+.form-grid label[for="id_descricao"] {
+    align-self: start;
+    padding-top: 0.5rem;
+}
+
+/* Grupo de Solicitação */
+.solicitacao-group {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+.solicitacao-group legend {
+    font-weight: 500;
+    margin: 0;
+}
+#id_status {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+#id_status li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Botões de Ação */
+.actions-section .btn {
+    background: none;
+    border: none;
+    color: #94a3b8; /* slate-400 */
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+.actions-section .btn:hover {
+    color: #f1f5f9; /* slate-100 */
+}
+
+/* Seção da Lista */
+.list-section {
+    margin-top: 3rem;
+}
+
+.list-section .table {
+    color: #cbd5e1;
+    width: 100%;
+    border-collapse: collapse;
+}
+.list-section .table thead th {
+    color: #94a3b8;
+    border-bottom: 1px solid #475569;
+    text-transform: uppercase;
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75rem;
+}
+.list-section .table tbody td {
+    border-bottom: 1px solid #334155;
+    padding: 0.75rem;
+}
+.list-section .table tbody tr:hover {
+    background-color: #334155;
+    cursor: pointer;
+}
+.list-section .table .table-active,
+.list-section .table .table-active:hover {
+    background-color: #059669 !important;
+    color: white !important;
+}
+
+/* Container de Filtro */
+.filtro-container {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+}
+.filtro-container .form-control {
+    background-color: #334155;
+    border: 1px solid #475569;
+    color: #f1f5f9;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+}
+.filtro-container .btn {
+    background: none;
+    border: 1px solid #475569;
+    color: #94a3b8;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+}
+.filtro-container .btn:hover {
+    background-color: #334155;
+    color: #f1f5f9;
+}
+
+/* Estilo minimalista para campos de formulário Django */
+.estoque-form input[type="text"],
+.estoque-form input[type="email"],
+.estoque-form input[type="number"],
+.estoque-form input[type="date"],
+.estoque-form input[type="tel"],
+.estoque-form select,
+.estoque-form textarea {
+    width: 100%;
+    padding: 0.125rem 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid #9ca3af;
+    outline: none;
+    transition: border-color 0.2s ease;
+    color: #374151;
+    font-size: 0.875rem;
+}
+
+.estoque-form input[type="text"]:focus,
+.estoque-form input[type="email"]:focus,
+.estoque-form input[type="number"]:focus,
+.estoque-form input[type="date"]:focus,
+.estoque-form input[type="tel"]:focus,
+.estoque-form select:focus,
+.estoque-form textarea:focus {
+    border-bottom-color: #6366f1;
+    box-shadow: none;
+}
+
+.estoque-form input[readonly] {
+    background-color: #f8fafc;
+    color: #64748b;
+}
+
+/* Estilo para labels */
+.estoque-form label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #4b5563;
+    margin-bottom: 0.125rem;
+}
+
+/* Estilo para campos de erro */
+.estoque-form .errorlist {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 0.125rem;
+    list-style: none;
+    padding: 0;
+}
+
+/* Estilo para campos com erro */
+.estoque-form .field-error input,
+.estoque-form .field-error select,
+.estoque-form .field-error textarea {
+    border-bottom-color: #dc2626;
+}
+
+/* Estilo para help text */
+.estoque-form .helptext {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.125rem;
+}
+
+/* Estilos gerais para o template */
+body {
+    background-color: #f1f5f9;
+}
+
+.bg-white {
+    background-color: #f8fafc !important;
+}
+
+.bg-gray-50 {
+    background-color: #f1f5f9 !important;
+}
+
+.bg-gray-100 {
+    background-color: #e2e8f0 !important;
+}
+
+.text-gray-800 {
+    color: #1e293b !important;
+}
+
+.text-gray-700 {
+    color: #334155 !important;
+}
+
+.text-gray-600 {
+    color: #475569 !important;
+}
+
+.text-gray-500 {
+    color: #64748b !important;
+}
+
+.border-gray-200 {
+    border-color: #cbd5e1 !important;
+}
+
+.border-gray-300 {
+    border-color: #9ca3af !important;
+}
+
+.hover\:bg-gray-50:hover {
+    background-color: #e2e8f0 !important;
+}
+
+/* Estilo para botões */
+.btn-primary {
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    padding: 0.375rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #5855eb;
+}
+
+.btn-secondary {
+    background-color: #64748b;
+    color: white;
+    border: none;
+    padding: 0.375rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #475569;
+}
+
+/* Estilo para cards */
+.card {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Estilo para tabelas */
+.table-header {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+}
+
+.table-row:hover {
+    background-color: #e2e8f0;
+}
+
+/* Estilo para modais */
+.modal-content {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.modal-header {
+    background-color: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Redução de espaçamentos */
+.compact-form .mb-6 {
+    margin-bottom: 1rem !important;
+}
+
+.compact-form .mb-4 {
+    margin-bottom: 0.75rem !important;
+}
+
+.compact-form .mb-2 {
+    margin-bottom: 0.5rem !important;
+}
+
+.compact-form .gap-6 {
+    gap: 1rem !important;
+}
+
+.compact-form .gap-4 {
+    gap: 0.75rem !important;
+}
+
+.compact-form .p-6 {
+    padding: 1rem !important;
+}
+
+.compact-form .py-4 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+.compact-form .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Redução de tamanhos de texto */
+.compact-form h3 {
+    font-size: 1.125rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.compact-form h2 {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.compact-form .text-lg {
+    font-size: 1rem !important;
+}
+
+.compact-form .text-xl {
+    font-size: 1.125rem !important;
+}
+
+/* Estilos específicos para o módulo de estoque */
+.estoque-form {
+    font-size: 0.875rem;
+}
+
+.estoque-form label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+}
+
+.estoque-form input,
+.estoque-form select,
+.estoque-form textarea {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background-color: #f9fafb;
+    transition: all 0.2s ease;
+}
+
+.estoque-form input:focus,
+.estoque-form select:focus,
+.estoque-form textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos compactos para formulários */
+.compact-form {
+    padding: 1rem;
+}
+
+.compact-form h3 {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+}
+
+.compact-form .grid {
+    gap: 0.75rem;
+}
+
+.compact-form input,
+.compact-form select,
+.compact-form textarea {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.compact-form label {
+    font-size: 0.7rem;
+    margin-bottom: 0.125rem;
+}
+
+.compact-form .mb-4 {
+    margin-bottom: 0.75rem;
+}
+
+.compact-form .mb-6 {
+    margin-bottom: 1rem;
+}
+
+.compact-form .pt-4 {
+    padding-top: 0.75rem;
+}
+
+.compact-form .pt-6 {
+    padding-top: 1rem;
+}
+
+/* Botões */
+.btn-primary {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2563eb;
+}
+
+.btn-primary.bg-green-600 {
+    background-color: #059669;
+}
+
+.btn-primary.bg-green-600:hover {
+    background-color: #047857;
+}
+
+.btn-secondary {
+    background-color: #6b7280;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+/* Botões de ação */
+.btn-action {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Status colors */
+.status-disponivel {
+    color: #059669;
+}
+
+.status-em_uso {
+    color: #d97706;
+}
+
+.status-reservado {
+    color: #6366f1;
+}
+
+/* Lista de estoque */
+.estoque-list-item {
+    transition: background-color 0.2s ease;
+}
+
+.estoque-list-item:hover {
+    background-color: #f3f4f6;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .compact-form {
+        padding: 0.75rem;
+    }
+    
+    .compact-form input,
+    .compact-form select,
+    .compact-form textarea {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .compact-form label {
+        font-size: 0.65rem;
+    }
+}
+
+/* Estilos de loading */
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Melhorias de responsividade */
+@media (max-width: 768px) {
+    .estoque-list-item .grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+    
+    .estoque-list-item .col-span-2 {
+        grid-column: span 1 !important;
+    }
+    
+    .compact-form .grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .compact-form .md\\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .compact-form .md\\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Transições suaves */
+.estoque-list-item {
+    transition: all 0.2s ease-in-out;
+}
+
+.estoque-list-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Melhorias no modal */
+#successModal {
+    backdrop-filter: blur(4px);
+}
+
+#successModal .bg-white {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+} 

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Agendamento de Visitas{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row gap-4">
+    <!-- Coluna Esquerda: Data e Navegação -->
+    <div class="md:w-2/3 w-full bg-slate-900 rounded-lg shadow p-4 flex flex-col items-center">
+        <div class="flex items-center justify-between w-full mb-4">
+            <a class="btn btn-primary-base" href="?data={{ anterior }}">ANTERIOR</a>
+            <div class="text-center flex-1">
+                <div class="text-6xl font-bold text-white">{{ agenda_hoje.data|date:'d' }}</div>
+                <div class="text-lg text-gray-300">{{ agenda_hoje.data|date:'l' }}</div>
+                <div class="text-md text-gray-400">{{ agenda_hoje.data|date:'d/m/Y' }}</div>
+            </div>
+            <a class="btn btn-primary-base" href="?data={{ proximo }}">PRÓXIMO</a>
+        </div>
+        <div class="flex justify-center w-full mb-2">
+            <a href="{% url 'agenda:relatorio_pdf' %}" class="btn bg-red-100 text-red-700 border border-red-300 hover:bg-red-200">RELATÓRIO PDF</a>
+        </div>
+        <div class="w-full bg-white rounded-lg mt-4 p-4">
+            <h3 class="text-lg font-bold mb-2 text-slate-900">Agendamentos do Dia</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-gray-500">
+                            <th class="text-left text-red-600">Horário</th>
+                            <th class="text-left">Serviço</th>
+                            <th class="text-left">Cliente</th>
+                            <th class="text-left">Profissional</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for visita in agenda_hoje.visitas.all %}
+                        <tr>
+                            <td class="text-red-600 cursor-pointer horario-editavel" data-id="{{ visita.id }}">{{ visita.horario|time:'H:i' }}</td>
+                            <td>{{ visita.servico }}</td>
+                            <td>{{ visita.cliente }}</td>
+                            <td>{{ visita.profissional }}</td>
+                            <td><button type="button" class="btn btn-xs btn-primary editar-agendamento" data-id="{{ visita.id }}">Editar</button></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-gray-400 text-center">Nenhuma visita agendada</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Coluna Direita: Próximos Dias -->
+    <div class="md:w-1/3 w-full bg-slate-100 rounded-lg shadow p-4">
+        <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-lg">PRÓXIMOS DIAS</span>
+            <a href="{% url 'agenda:agendar_visita' %}" class="btn btn-primary-base">AGENDAR</a>
+        </div>
+        <div class="flex flex-col gap-2">
+            {% for agenda in agendas %}
+            <div class="bg-white rounded shadow p-2">
+                <div class="flex items-center gap-2 border-b pb-1 mb-1">
+                    <div class="text-3xl font-bold text-indigo-700">{{ agenda.data|date:'d' }}</div>
+                    <div>
+                        <div class="text-sm font-semibold text-gray-700">{{ agenda.data|date:'l' }}</div>
+                        <div class="text-xs text-gray-400">{{ agenda.data|date:'d/m/Y' }}</div>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead>
+                            <tr class="text-gray-500">
+                                <th class="text-left">Horário</th>
+                                <th class="text-left">Serviço</th>
+                                <th class="text-left">Cliente</th>
+                                <th class="text-left">Profissional</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for visita in agenda.visitas.all %}
+                            <tr>
+                                <td>{{ visita.horario|time:'H:i' }}</td>
+                                <td>{{ visita.servico }}</td>
+                                <td>{{ visita.cliente }}</td>
+                                <td>{{ visita.profissional }}</td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="4" class="text-gray-400 text-center">Nenhuma visita agendada</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<!-- Modal de Update de Agendamento -->
+<div id="modal-update-agendamento" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
+    <h2 class="text-lg font-bold mb-4">Editar Agendamento</h2>
+    <form id="form-update-agendamento">
+      <input type="hidden" name="visita_id" id="modal-visita-id">
+      <div class="mb-2">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Horário</label>
+        <input type="time" name="horario" id="modal-horario" class="w-full border rounded px-2 py-1">
+      </div>
+      <div class="mb-2">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Serviço</label>
+        <input type="text" name="servico" id="modal-servico" class="w-full border rounded px-2 py-1">
+      </div>
+      <div class="mb-2">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
+        <input type="text" name="cliente" id="modal-cliente" class="w-full border rounded px-2 py-1">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Profissional</label>
+        <input type="text" name="profissional" id="modal-profissional" class="w-full border rounded px-2 py-1">
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="cancelar-update-agendamento" class="btn btn-secondary">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+// Abrir modal ao clicar em editar
+let agendamentoAtual = null;
+document.addEventListener('click', function(e) {
+  if (e.target.matches('.editar-agendamento')) {
+    agendamentoAtual = e.target.closest('tr');
+    document.getElementById('modal-update-agendamento').classList.remove('hidden');
+    document.getElementById('modal-visita-id').value = e.target.dataset.id;
+    document.getElementById('modal-horario').value = agendamentoAtual.querySelector('td:nth-child(1)').textContent.trim();
+    document.getElementById('modal-servico').value = agendamentoAtual.querySelector('td:nth-child(2)').textContent.trim();
+    document.getElementById('modal-cliente').value = agendamentoAtual.querySelector('td:nth-child(3)').textContent.trim();
+    document.getElementById('modal-profissional').value = agendamentoAtual.querySelector('td:nth-child(4)').textContent.trim();
+  }
+  if (e.target.id === 'cancelar-update-agendamento') {
+    document.getElementById('modal-update-agendamento').classList.add('hidden');
+  }
+});
+// Submissão do modal (AJAX pode ser implementado depois)
+document.getElementById('form-update-agendamento').addEventListener('submit', function(e) {
+  e.preventDefault();
+  // Aqui você pode implementar o AJAX para update real
+  document.getElementById('modal-update-agendamento').classList.add('hidden');
+});
+</script>
+{% endblock %} 

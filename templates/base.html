@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tech Projects{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" sizes="64x64">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1e293b;
+        }
+        .tab-item {
+            transition: all 0.2s ease-in-out;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+        }
+        .tab-item:hover {
+            box-shadow: 0 0 8px 2px #60a5fa, 0 2px 0 0 #60a5fa;
+            background-color: #e0f2fe;
+            color: #2563eb !important;
+            z-index: 1;
+        }
+        .header {
+            background-color: #f1f5f9;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .btn-primary-base {
+            background-color: #334155;
+            color: white;
+        }
+        .btn-primary-base:hover {
+            background-color: #1e293b;
+        }
+        .field-error-message {
+            color: #dc2626;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        .form-error-message {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        input.error, select.error, textarea.error {
+            border-color: #dc2626 !important;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-slate-800 min-h-screen flex flex-col overflow-x-hidden text-xs sm:text-sm">
+    <!-- Header Único: Logo, Menu e Usuário na mesma linha -->
+    <header class="header h-10 sm:h-12 flex items-center justify-between px-1 sm:px-2 z-20 w-full max-w-screen overflow-x-hidden">
+        <div class="flex items-center w-full gap-2">
+            <!-- Logo -->
+            <a href="/" class="flex items-center">
+                <img src="{% static 'img/tech.png' %}" alt="Tech Projects" class="h-20 w-auto mr-4" />
+            </a>
+            <!-- Menu Desktop Inline -->
+            <nav id="main-menu-desktop" class="hidden sm:flex flex-row flex-1 justify-start items-center gap-2 sm:gap-4 bg-transparent shadow-none static w-auto max-w-none rounded-none py-0 px-0 mt-0">
+                <a href="{% url 'home:index' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'index' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-home mr-0.5"></i>HOME</a>
+                <a href="{% url 'home:home' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'home' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-tachometer-alt mr-0.5"></i>DASHBOARD</a>
+                <a href="{% url 'clientes:clientes' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'clientes' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-users mr-0.5"></i>CLIENTES</a>
+                <a href="{% url 'orcamento:lista_orcamentos' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'orcamento' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-calculator mr-0.5"></i>ORÇAMENTO</a>
+                <a href="{% url 'rat:rat' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'rat' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-file-alt mr-0.5"></i>RAT</a>
+                <a href="{% url 'orpecas:orpecas' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'orpecas' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-cogs mr-0.5"></i>ORÇ. PEÇAS</a>
+                <a href="{% url 'estoque:estoque' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'estoque' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-box-open mr-0.5"></i>ESTOQUE</a>
+                <a href="{% url 'pagpendentes:lista' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'pagpendentes' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-money-bill-wave mr-0.5"></i>PAGAMENTOS</a>
+                <a href="{% url 'agenda:home' %}" class="tab-item px-2 py-1 text-xs sm:text-xs whitespace-nowrap {% if active_tab == 'agenda' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-calendar-alt mr-0.5"></i>AGENDA</a>
+            </nav>
+            <!-- Botão hamburger mobile -->
+            <button id="mobile-menu-btn" class="sm:hidden flex items-center justify-center p-1 text-gray-600 hover:text-indigo-500 focus:outline-none" aria-label="Abrir menu">
+                <i class="fas fa-bars text-base"></i>
+                    </button>
+            <!-- Usuário e botão de logout -->
+            <div class="flex items-center gap-1 ml-auto">
+                <span class="hidden sm:inline font-semibold text-gray-700 text-xs">{{ user.username }}</span>
+                <a href="{% url 'accounts:logout' %}" class="text-xs text-gray-600 hover:text-red-600 flex items-center gap-1 px-2 py-1 rounded transition-colors" title="Sair">
+                    <i class="fas fa-sign-out-alt"></i> <span class="hidden sm:inline">Sair</span>
+                </a>
+            </div>
+        </div>
+    </header>
+    <!-- Conteúdo principal -->
+    <main class="flex-1 w-full p-0.5 sm:p-2 max-w-screen overflow-x-auto sm:overflow-x-hidden text-xs">
+        {% block content %}{% endblock %}
+    </main>
+    <!-- Overlay para menu principal mobile (no final do body) -->
+    <div id="main-menu-overlay" class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-[99998] hidden sm:hidden" style="z-index:99998 !important"></div>
+    <nav id="main-menu-mobile" class="hidden sm:hidden flex-col justify-center items-center gap-2 bg-white shadow-2xl fixed top-8 left-1/2 -translate-x-1/2 w-11/12 max-w-xs rounded-xl py-4 px-2 items-center mt-0 z-[99999]" style="z-index:99999 !important">
+        <a href="{% url 'home:index' %}" class="tab-item block w-full text-center px-4 py-3 text-base whitespace-nowrap {% if active_tab == 'index' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-home mr-0.5"></i>HOME</a>
+        <a href="{% url 'home:home' %}" class="tab-item block w-full text-center px-4 py-3 text-base sm:text-xs whitespace-nowrap {% if active_tab == 'home' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-tachometer-alt mr-0.5"></i>DASHBOARD</a>
+        <a href="{% url 'clientes:clientes' %}" class="tab-item block w-full text-center px-4 py-3 text-base sm:text-xs whitespace-nowrap {% if active_tab == 'clientes' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-users mr-0.5"></i>CLIENTES</a>
+        <a href="{% url 'orcamento:lista_orcamentos' %}" class="tab-item block w-full text-center px-4 py-3 text-base sm:text-xs whitespace-nowrap {% if active_tab == 'orcamento' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-calculator mr-0.5"></i>ORÇAMENTO</a>
+        <a href="{% url 'rat:rat' %}" class="tab-item block w-full text-center px-4 py-3 text-base sm:text-xs whitespace-nowrap {% if active_tab == 'rat' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-file-alt mr-0.5"></i>RAT</a>
+        <a href="{% url 'orpecas:orpecas' %}" class="tab-item block w-full text-center px-4 py-3 text-base sm:text-xs whitespace-nowrap {% if active_tab == 'orpecas' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-cogs mr-0.5"></i>ORÇ. PEÇAS</a>
+        <a href="{% url 'estoque:estoque' %}" class="tab-item block w-full text-center px-4 py-3 text-base sm:text-xs whitespace-nowrap {% if active_tab == 'estoque' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-box-open mr-0.5"></i>ESTOQUE</a>
+        <a href="{% url 'pagpendentes:lista' %}" class="tab-item block w-full text-center px-4 py-3 text-base sm:text-xs whitespace-nowrap {% if active_tab == 'pagpendentes' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-money-bill-wave mr-0.5"></i>PAGAMENTOS</a>
+        <a href="{% url 'agenda:home' %}" class="tab-item block w-full text-center px-4 py-3 text-base sm:text-xs whitespace-nowrap {% if active_tab == 'agenda' %}text-slate-700 border-b-2 border-slate-700{% else %}text-gray-500 hover:text-slate-700{% endif %}"><i class="fas fa-calendar-alt mr-0.5"></i>AGENDA</a>
+    </nav>
+    <!-- Sistema de Validação -->
+    <script src="{% static 'js/validation.js' %}"></script>
+    <script>
+console.log('Menu JS carregado!');
+const menuBtn = document.getElementById('mobile-menu-btn');
+const mainMenuMobile = document.getElementById('main-menu-mobile');
+const mainMenuOverlay = document.getElementById('main-menu-overlay');
+function openMainMenuMobile() {
+    mainMenuMobile.classList.remove('hidden');
+    mainMenuMobile.classList.add('flex');
+    if (mainMenuOverlay) mainMenuOverlay.classList.remove('hidden');
+    if (mainMenuOverlay) mainMenuOverlay.classList.add('block');
+}
+function closeMainMenuMobile() {
+    mainMenuMobile.classList.add('hidden');
+    mainMenuMobile.classList.remove('flex');
+    if (mainMenuOverlay) mainMenuOverlay.classList.add('hidden');
+    if (mainMenuOverlay) mainMenuOverlay.classList.remove('block');
+}
+if (menuBtn && mainMenuMobile) {
+    menuBtn.addEventListener('click', function(e) {
+        if (window.innerWidth < 640) {
+            e.stopPropagation();
+            if (mainMenuMobile.classList.contains('hidden')) {
+                mainMenuMobile.classList.remove('hidden');
+                mainMenuMobile.classList.add('flex');
+                if (mainMenuOverlay) mainMenuOverlay.classList.remove('hidden');
+                if (mainMenuOverlay) mainMenuOverlay.classList.add('block');
+            } else {
+                mainMenuMobile.classList.add('hidden');
+                mainMenuMobile.classList.remove('flex');
+                if (mainMenuOverlay) mainMenuOverlay.classList.add('hidden');
+                if (mainMenuOverlay) mainMenuOverlay.classList.remove('block');
+            }
+        }
+    });
+    // Fecha ao clicar em um link
+    mainMenuMobile.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth < 640) closeMainMenuMobile();
+        });
+    });
+    // Fecha ao clicar fora ou no overlay
+    document.addEventListener('click', function(e) {
+        if (window.innerWidth < 640 && mainMenuOverlay && !mainMenuMobile.contains(e.target) && e.target !== menuBtn) {
+            closeMainMenuMobile();
+        }
+    });
+    if (mainMenuOverlay) {
+        mainMenuOverlay.addEventListener('click', closeMainMenuMobile);
+    }
+    // Garante que o menu está oculto no mobile ao iniciar
+    function checkMenu() {
+        if (window.innerWidth < 640) closeMainMenuMobile();
+        else {
+            mainMenuMobile.classList.remove('hidden');
+            mainMenuMobile.classList.remove('flex');
+            if (mainMenuOverlay) mainMenuOverlay.classList.add('hidden');
+            if (mainMenuOverlay) mainMenuOverlay.classList.remove('block');
+        }
+    }
+    window.addEventListener('resize', checkMenu);
+    checkMenu();
+}
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

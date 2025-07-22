@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Perfil - Tech Projects{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Perfil do Usuário</h2>
+            <a href="{% url 'accounts:logout' %}" class="btn-secondary">
+                <i class="fas fa-sign-out-alt mr-2"></i>Sair
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Informações do Usuário -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Informações Pessoais</h3>
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500">Nome de Usuário</label>
+                        <p class="text-gray-900">{{ user.username }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500">Nome Completo</label>
+                        <p class="text-gray-900">{{ user.get_full_name|default:"Não informado" }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500">Email</label>
+                        <p class="text-gray-900">{{ user.email|default:"Não informado" }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500">Data de Cadastro</label>
+                        <p class="text-gray-900">{{ user.date_joined|date:"d/m/Y H:i" }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-500">Último Login</label>
+                        <p class="text-gray-900">{{ user.last_login|date:"d/m/Y H:i"|default:"Nunca" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="bg-gray-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-700 mb-4">Estatísticas do Sistema</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Total de Clientes</span>
+                        <span class="font-semibold text-gray-900">{{ total_clientes }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Orçamentos Abertos</span>
+                        <span class="font-semibold text-yellow-600">{{ orcamentos_abertos }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Orçamentos Aprovados</span>
+                        <span class="font-semibold text-green-600">{{ orcamentos_aprovados }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">RATs Pendentes</span>
+                        <span class="font-semibold text-blue-600">{{ rats_pendentes }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="mt-8">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4">Ações Rápidas</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="{% url 'clientes:clientes' %}" class="bg-blue-100 hover:bg-blue-200 p-4 rounded-lg text-center transition-colors">
+                    <i class="fas fa-users text-blue-600 text-2xl mb-2"></i>
+                    <p class="text-sm font-medium text-blue-800">Clientes</p>
+                </a>
+                <a href="{% url 'orcamento:lista_orcamentos' %}" class="bg-green-100 hover:bg-green-200 p-4 rounded-lg text-center transition-colors">
+                    <i class="fas fa-calculator text-green-600 text-2xl mb-2"></i>
+                    <p class="text-sm font-medium text-green-800">Orçamentos</p>
+                </a>
+                <a href="{% url 'rat:rat' %}" class="bg-purple-100 hover:bg-purple-200 p-4 rounded-lg text-center transition-colors">
+                    <i class="fas fa-file-alt text-purple-600 text-2xl mb-2"></i>
+                    <p class="text-sm font-medium text-purple-800">RATs</p>
+                </a>
+                <a href="{% url 'estoque:estoque' %}" class="bg-orange-100 hover:bg-orange-200 p-4 rounded-lg text-center transition-colors">
+                    <i class="fas fa-box-open text-orange-600 text-2xl mb-2"></i>
+                    <p class="text-sm font-medium text-orange-800">Estoque</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,153 @@
+body {
+    /* Exemplo de cor de fundo */
+    background-color: #0f172a;
+}
+
+/* Estilos para o formulário de detalhes */
+#details-section {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0;
+}
+
+#details-section.visible {
+    opacity: 1;
+}
+
+/* Estilos para itens da lista selecionados */
+.payment-item.selected {
+    background-color: #dbeafe !important;
+    border-left: 4px solid #3b82f6;
+}
+
+.payment-item:hover {
+    background-color: #f8fafc;
+}
+
+/* Estilos para os campos de formulário */
+.form-field {
+    transition: border-color 0.2s ease-in-out;
+}
+
+.form-field:focus {
+    border-color: #3b82f6;
+}
+
+/* Estilos para seções do formulário */
+.form-section {
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para o botão de fechar */
+#closeDetailsBtn {
+    transition: color 0.2s ease-in-out;
+}
+
+#closeDetailsBtn:hover {
+    color: #ef4444;
+}
+
+/* Estilos para campos readonly */
+input[readonly], textarea[readonly] {
+    background-color: #f9fafb;
+    color: #374151;
+    cursor: default;
+}
+
+/* Estilos para valores monetários */
+.money-value {
+    font-weight: 600;
+    color: #059669;
+}
+
+/* Estilos para status */
+.status-pendente {
+    color: #d97706;
+    font-weight: 600;
+}
+
+.status-pago {
+    color: #059669;
+    font-weight: 600;
+}
+
+/* Sistema de Notificações */
+#notification-container {
+    pointer-events: none;
+}
+
+#notification-container > div {
+    pointer-events: auto;
+}
+
+/* Animações para notificações */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.notification-enter {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.notification-exit {
+    animation: slideOutRight 0.3s ease-in;
+}
+
+/* Modal de confirmação */
+#confirm-modal {
+    backdrop-filter: blur(4px);
+}
+
+#confirm-modal .bg-white {
+    animation: modalEnter 0.2s ease-out;
+}
+
+@keyframes modalEnter {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+    
+    #details-section {
+        margin-top: 1rem;
+    }
+    
+    #notification-container {
+        top: 1rem;
+        right: 1rem;
+        left: 1rem;
+    }
+    
+    #notification-container > div {
+        max-width: none;
+    }
+} 

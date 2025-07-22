@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tech Projects - Pagamentos Pendentes{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'pagpendentes/css/pagpendentes.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- Coluna Esquerda - Lista de Pagamentos -->
+        <div class="lg:w-2/5 space-y-6">
+            <!-- Formulário de Pesquisa -->
+            <div class="bg-slate-200 rounded-lg shadow-lg p-6 compact-form">
+                <form id="search-form" method="get" action="{% url 'pagpendentes:lista' %}">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Pesquisar</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">PESQUISAR NOME</label>
+                            <input type="text" name="search_name" id="search-name-input" value="{{ search_name }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">BUSCAR ORDEM SERVIÇO</label>
+                            <input type="text" name="search_numero" id="search-numero-input" value="{{ search_numero }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div id="payment-list-container" class="bg-white rounded-lg shadow-lg compact-form overflow-hidden">
+                <div class="p-6 border-b bg-slate-200">
+                     <h2 class="text-xl font-bold text-gray-800">Pagamentos Pendentes</h2>
+                </div>
+                <div id="payment-list-results" class="max-h-[60vh] overflow-y-auto">
+                    {% include 'pagpendentes/partials/lista_pagamentos.html' %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Coluna Direita - Detalhes e Ações -->
+        <div class="lg:w-3/5 space-y-6">
+            <div class="bg-slate-200 rounded-lg shadow-lg p-6 compact-form" id="details-section" style="visibility: hidden;">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">Detalhes do Pagamento</h3>
+                    <button type="button" id="closeDetailsBtn" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <form id="payment-details-form" data-marcar-pago-url="{% url 'pagpendentes:marcar_pago' %}">
+                    {% csrf_token %}
+                    <input type="hidden" id="details_id" name="id">
+                    <input type="hidden" id="details_content_type" name="content_type">
+                    
+                    <!-- Informações Principais -->
+                    <div class="bg-white rounded-lg p-6 mb-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Documento</label>
+                                <input type="text" id="details_tipo_documento" readonly class="w-full py-2 px-3 bg-gray-100 border border-gray-300 rounded-md">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                                <input type="text" id="details_data_servico" readonly class="w-full py-2 px-3 bg-gray-100 border border-gray-300 rounded-md">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome do Cliente</label>
+                            <input type="text" id="details_nome" readonly class="w-full py-2 px-3 bg-gray-100 border border-gray-300 rounded-md">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Valor Total</label>
+                                <input type="text" id="details_valor_total" readonly class="w-full py-2 px-3 bg-gray-100 border border-gray-300 rounded-md font-semibold text-green-600">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Status Atual</label>
+                                <input type="text" id="details_status" readonly class="w-full py-2 px-3 bg-gray-100 border border-gray-300 rounded-md">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Alterar Status</label>
+                            <select id="details_status_select" class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="pendente_pagamento">Pendente de Pagamento</option>
+                                <option value="pago">PAGO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Ações -->
+                    <div class="flex justify-end">
+                        <button type="button" id="marcarPagoBtn" class="btn-primary">Atualizar Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sistema de Notificações Customizado -->
+    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2">
+        <!-- As notificações serão inseridas aqui dinamicamente -->
+    </div>
+
+    <!-- Modal de Confirmação Customizado -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="text-lg font-medium text-gray-900" id="confirm-title">Confirmar Ação</h3>
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <p class="text-sm text-gray-600" id="confirm-message">Tem certeza que deseja realizar esta ação?</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" id="confirm-cancel" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                        Cancelar
+                    </button>
+                    <button type="button" id="confirm-ok" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'pagpendentes/js/pagpendentes.js' %}?v={% now "U" %}"></script>
+{% endblock %} 

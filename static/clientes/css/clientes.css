@@ -1,0 +1,497 @@
+/* 
+  Paleta de Cores Padrão do Sistema:
+  - Fundo: #1e293b (bg-slate-800)
+  - Painéis (Cards): #ffffff (branco) com sombra sutil
+  - Bordas: #e2e8f0 (cinza claro)
+  - Texto principal: #1e293b (quase preto)
+  - Texto secundário: #64748b (cinza médio)
+  - Cor de destaque (foco, botões): #334155 (Azul Neutro / Slate)
+*/
+
+/* Estilo minimalista para campos de formulário Django */
+.clientes-form input[type="text"],
+.clientes-form input[type="email"],
+.clientes-form input[type="number"],
+.clientes-form input[type="date"],
+.clientes-form input[type="tel"],
+.clientes-form select,
+.clientes-form textarea {
+    width: 100%;
+    padding: 0.125rem 0;
+    background: transparent;
+    border: 0;
+    border-bottom: 2px solid #e2e8f0;
+    outline: none;
+    transition: border-color 0.2s ease;
+    color: #334155;
+    font-size: 0.875rem;
+}
+
+.clientes-form input[type="text"]:focus,
+.clientes-form input[type="email"]:focus,
+.clientes-form input[type="number"]:focus,
+.clientes-form input[type="date"]:focus,
+.clientes-form input[type="tel"]:focus,
+.clientes-form select:focus,
+.clientes-form textarea:focus {
+    border-bottom-color: #334155;
+    box-shadow: none;
+}
+
+.clientes-form input[readonly] {
+    background-color: #f8fafc;
+    color: #64748b;
+}
+
+/* Estilo para labels */
+.clientes-form label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 0.125rem;
+}
+
+/* Estilo para campos de erro */
+.clientes-form .errorlist {
+    color: #dc2626;
+    font-size: 0.75rem;
+    margin-top: 0.125rem;
+    list-style: none;
+    padding: 0;
+}
+
+/* Estilo para campos com erro */
+.clientes-form .field-error input,
+.clientes-form .field-error select,
+.clientes-form .field-error textarea {
+    border-bottom-color: #dc2626;
+}
+
+/* Estilo para help text */
+.clientes-form .helptext {
+    font-size: 0.75rem;
+    color: #64748b;
+    margin-top: 0.125rem;
+}
+
+/* Estilos gerais para o template */
+body {
+    background-color: #1e293b;
+}
+
+.bg-white {
+    background-color: #ffffff !important;
+}
+
+.bg-slate-200 {
+    background-color: #e2e8f0 !important;
+}
+
+.bg-gray-50 {
+    background-color: #f8fafc !important;
+}
+
+.bg-gray-100 {
+    background-color: #f1f5f9 !important;
+}
+
+.text-gray-800 {
+    color: #1e293b !important;
+}
+
+.text-gray-700 {
+    color: #334155 !important;
+}
+
+.text-gray-600 {
+    color: #475569 !important;
+}
+
+.text-gray-500 {
+    color: #64748b !important;
+}
+
+.border-gray-200 {
+    border-color: #e2e8f0 !important;
+}
+
+.border-gray-300 {
+    border-color: #cbd5e1 !important;
+}
+
+.hover\:bg-gray-50:hover {
+    background-color: #f1f5f9 !important;
+}
+
+/* Estilo para botões */
+.btn-primary {
+    background-color: #334155;
+    color: white;
+    border: none;
+    padding: 0.375rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #1e293b;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 0.375rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+    color: #1e293b;
+}
+
+/* Estilo para cards */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Estilo para tabelas */
+.table-header {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.table-row:hover {
+    background-color: #f1f5f9;
+}
+
+/* Estilo para modais */
+.modal-content {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+}
+
+.modal-header {
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* Redução de espaçamentos */
+.compact-form .mb-6 {
+    margin-bottom: 1rem !important;
+}
+
+.compact-form .mb-4 {
+    margin-bottom: 0.75rem !important;
+}
+
+.compact-form .mb-2 {
+    margin-bottom: 0.5rem !important;
+}
+
+.compact-form .gap-6 {
+    gap: 1rem !important;
+}
+
+.compact-form .gap-4 {
+    gap: 0.75rem !important;
+}
+
+.compact-form .p-6 {
+    padding: 1rem !important;
+}
+
+.compact-form .py-4 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+.compact-form .px-6 {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Redução de tamanhos de texto */
+.compact-form h3 {
+    font-size: 1.125rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.compact-form h2 {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+.compact-form .text-lg {
+    font-size: 1rem !important;
+}
+
+.compact-form .text-xl {
+    font-size: 1.125rem !important;
+}
+
+/* Estilos específicos para o módulo de clientes */
+.clientes-form {
+    font-size: 0.875rem;
+}
+
+.clientes-form label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+}
+
+.clientes-form input,
+.clientes-form select,
+.clientes-form textarea {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.clientes-form input:focus,
+.clientes-form select:focus,
+.clientes-form textarea:focus {
+    outline: none;
+    border-color: #334155;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(51, 65, 85, 0.1);
+}
+
+/* Estilos compactos para formulários */
+.compact-form {
+    padding: 1rem;
+}
+
+.compact-form h3 {
+    font-size: 1.125rem;
+    margin-bottom: 1rem;
+}
+
+.compact-form .grid {
+    gap: 0.75rem;
+}
+
+.compact-form input,
+.compact-form select,
+.compact-form textarea {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.compact-form label {
+    font-size: 0.7rem;
+    margin-bottom: 0.125rem;
+}
+
+.compact-form .mb-4 {
+    margin-bottom: 0.75rem;
+}
+
+.compact-form .mb-6 {
+    margin-bottom: 1rem;
+}
+
+.compact-form .pt-4 {
+    padding-top: 0.75rem;
+}
+
+.compact-form .pt-6 {
+    padding-top: 1rem;
+}
+
+/* Botões */
+.btn-primary {
+    background-color: #334155;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #1e293b;
+}
+
+.btn-primary.bg-green-600 {
+    background-color: #059669;
+}
+
+.btn-primary.bg-green-600:hover {
+    background-color: #047857;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #f8fafc;
+    border-color: #94a3b8;
+    color: #1e293b;
+}
+
+/* Botões de ação */
+.btn-action {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.btn-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Status colors */
+.status-agendado {
+    color: #64748b;
+}
+
+.status-pendente_pagamento {
+    color: #d97706;
+}
+
+.status-finalizado {
+    color: #059669;
+}
+
+.status-cancelado {
+    color: #dc2626;
+}
+
+/* Lista de clientes */
+.client-list-item {
+    transition: background-color 0.2s ease;
+}
+
+.client-list-item:hover {
+    background-color: #f1f5f9;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .compact-form {
+        padding: 0.75rem;
+    }
+    
+    .compact-form input,
+    .compact-form select,
+    .compact-form textarea {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .compact-form label {
+        font-size: 0.65rem;
+    }
+}
+
+/* Estilos de loading */
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #334155;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Melhorias de responsividade */
+@media (max-width: 768px) {
+    .client-list-item .grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+    
+    .client-list-item .col-span-2 {
+        grid-column: span 1 !important;
+    }
+    
+    .compact-form .grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .compact-form .md\\:grid-cols-2 {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .compact-form .md\\:grid-cols-3 {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Transições suaves */
+.client-list-item {
+    transition: all 0.2s ease-in-out;
+}
+
+.client-list-item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Melhorias no modal */
+#successModal {
+    backdrop-filter: blur(4px);
+}
+
+#successModal .bg-white {
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+} 

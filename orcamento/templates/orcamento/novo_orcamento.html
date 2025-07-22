@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Novo Orçamento{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-lg p-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-900">Novo Orçamento</h1>
+            <a href="{% url 'orcamento:lista_orcamentos' %}" class="text-indigo-600 hover:text-indigo-900">
+                ← Voltar para Lista
+            </a>
+        </div>
+
+        <form id="novoOrcamentoForm" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Informações Básicas -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Número *</label>
+                    <input type="text" name="numero" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Data *</label>
+                    <input type="date" name="data" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Status</label>
+                    <select name="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="aberto">Aberto</option>
+                        <option value="aprovado">Aprovado</option>
+                        <option value="cancelado">Cancelado</option>
+                        <option value="finalizado">Finalizado</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Informações do Cliente -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Nome *</label>
+                    <input type="text" name="nome" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Telefone</label>
+                    <input type="text" name="telefone" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Endereço</label>
+                    <input type="text" name="endereco" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">CPF/CNPJ</label>
+                    <input type="text" name="cpf_cnpj" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Bairro</label>
+                    <input type="text" name="bairro" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Cidade</label>
+                    <input type="text" name="cidade" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                </div>
+            </div>
+
+            <!-- Itens do Orçamento -->
+            <div class="mt-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-lg font-medium">Itens do Orçamento</h4>
+                    <button type="button" id="adicionar-item" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+                        Adicionar Item
+                    </button>
+                </div>
+
+                <div id="itens-container" class="space-y-4">
+                    <!-- Itens serão adicionados aqui dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Totais -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Valor Total</label>
+                    <input type="number" step="0.01" name="valor_total" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-50" readonly>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Desconto</label>
+                    <input type="number" step="0.01" name="valor_desconto" value="0.00" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Total com Desconto</label>
+                    <input type="number" step="0.01" name="valor_total_com_desconto" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-50" readonly>
+                </div>
+            </div>
+
+            <!-- Observações -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Observações</label>
+                <textarea name="observacao" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+            </div>
+
+            <!-- Botões -->
+            <div class="flex justify-end space-x-3">
+                <a href="{% url 'orcamento:lista_orcamentos' %}" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    Cancelar
+                </a>
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Salvar Orçamento
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'orcamento/js/novo_orcamento.js' %}"></script>
+{% endblock %} 

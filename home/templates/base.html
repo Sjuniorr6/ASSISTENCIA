@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tech Projects{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{% static 'img/tech.png' %}">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-gray-50 font-sans leading-normal tracking-normal">
+
+    <!-- Header -->
+    <header class="bg-gray-900 shadow-lg py-4">
+        <div class="container mx-auto flex justify-between items-center px-6">
+            <a href="/" class="flex items-center">
+                <img src="{% static 'img/tech.png' %}" alt="Tech Projects" class="h-10 w-auto mr-2" />
+            </a>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-200">Início</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-200">Recursos</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-200">Benefícios</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-white transition-colors duration-200">Contato</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h5 class="text-xl font-bold mb-4">Tech Projects</h5>
+                    <p class="text-gray-400">Soluções tecnológicas para controle interno e governança corporativa.</p>
+                </div>
+                <div>
+                    <h6 class="font-semibold mb-4">Soluções</h6>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Gestão de Riscos</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Auditoria Interna</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Conformidade</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h6 class="font-semibold mb-4">Empresa</h6>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Sobre Nós</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Casos de Sucesso</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h6 class="font-semibold mb-4">Suporte</h6>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Documentação</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Treinamentos</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Central de Ajuda</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2025 Tech Projects. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html> 

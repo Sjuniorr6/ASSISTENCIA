@@ -1,0 +1,372 @@
+{% extends 'base.html' %}
+{% load clientes_filters %}
+{% load static %}
+
+{% block title %}Tech Projects - Cadastro de Clientes{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'clientes/css/clientes.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Messages -->
+    {# Removido: não exibir mensagens para colaboradores na aba de clientes #}
+
+    <!-- Main Layout -->
+    <div class="flex flex-col-reverse lg:flex-row gap-6">
+        <!-- Left Column - Form (60%) -->
+        <div id="form-column" class="lg:w-3/5 space-y-6">
+            <!-- Client Form -->
+            <div class="bg-white rounded-lg shadow-lg p-6 compact-form">
+                <form method="post" action="{% url 'clientes:clientes' %}" class="clientes-form" id="clienteForm" data-validate>
+                    {% csrf_token %}
+                    <input type="hidden" name="id" id="cliente_id" value="">
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-800" id="formTitle">Novo Cliente</h3>
+                        <div class="flex gap-2">
+                            <button type="button" id="gerarPdfBtn" class="btn-secondary text-sm">Gerar PDF</button>
+                            <button type="button" id="novoPdfClienteBtn" class="btn-secondary text-sm">Novo PDF Cliente</button>
+                            <button type="button" id="cancelEdit" class="btn-secondary text-sm" style="display: none;">Voltar</button>
+                            <button type="button" id="limparForm" class="btn-secondary text-sm">Limpar</button>
+                        </div>
+                    </div>
+
+                    <!-- Ordem de Serviço -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Número OS</label>
+                            <input type="text" name="numero_os" id="numero_os" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-slate-700">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data Chamado</label>
+                            <input type="date" name="data_chamado" id="data_chamado" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select name="status_servico" id="status_servico" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                <option value="agendado">Agendado</option>
+                                <option value="cancelado">Cancelado</option>
+                                <option value="finalizado">Finalizado</option>
+                                <option value="pendente_pagamento">Pendente de Pagamento</option>
+                                <option value="pendente_pagamento">PAGO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Dados Pessoais -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                            <input type="text" name="nome" id="nome" required class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">CPF/CNPJ</label>
+                            <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                            <input type="text" name="telefone" id="telefone" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Celular</label>
+                            <input type="text" name="celular" id="celular" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" name="email" id="email" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Apto/Bloco</label>
+                            <input type="text" name="apto_bloco" id="apto_bloco" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Endereço -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
+                            <input type="text" name="endereco" id="endereco" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Bairro</label>
+                            <input type="text" name="bairro" id="bairro" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
+                            <input type="text" name="cidade" id="cidade" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">CEP</label>
+                            <input type="text" name="cep" id="cep" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <!-- Informações do Serviço -->
+                    <div class="border-t pt-6 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Informações do Serviço</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Revendedor</label>
+                                <input type="text" name="revendedor" id="revendedor" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Técnicos</label>
+                                <input type="text" name="tecnicos" id="tecnicos" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Período</label>
+                                <input type="text" name="periodo" id="periodo" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Data Instalação</label>
+                                <input type="date" name="data_instalacao" id="data_instalacao" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Valor Total</label>
+                                <input type="number" step="0.01" name="valor_total" id="valor_total" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Forma Pagamento</label>
+                                <input type="text" name="forma_pagamento" id="forma_pagamento" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Observações -->
+                    <div class="border-t pt-6 mb-6">
+                        <div class="grid grid-cols-1 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Serviços</label>
+                                <textarea name="servicos" id="servicos" rows="3" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Relatórios de Serviços Prestados</label>
+                                <textarea name="relatorios_servicos_prestados" id="relatorios_servicos_prestados" rows="3" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" class="btn-primary" id="submitBtn">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column - Client List and Search (40%) -->
+        <div id="list-column" class="lg:w-2/5 space-y-6">
+            <!-- Search Section -->
+            <div class="bg-white rounded-lg shadow-lg p-6 compact-form">
+                <form method="get">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Pesquisar</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">PESQUISAR NOME</label>
+                            <input type="text" name="search_name" id="search-name-input" value="{{ search_name }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">BUSCAR ORDEM SERVIÇO</label>
+                            <input type="text" name="search_os" id="search-os-input" value="{{ search_os }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        
+                        <div class="flex items-end">
+                            <button type="submit" class="btn-secondary w-full mt-4">Pesquisar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Client List -->
+            <div id="client-list-container" 
+                 data-get-url-template="{% url 'clientes:get_cliente' 0 %}"
+                 data-update-url-template="{% url 'clientes:atualizar_cliente' 0 %}"
+                 class="bg-white rounded-lg shadow-lg compact-form overflow-hidden">
+                <div class="p-6 border-b bg-gray-50">
+                    <h2 class="text-xl font-bold text-gray-800">Listagem de Clientes</h2>
+                </div>
+                <div id="client-list-results" class="max-h-96 overflow-y-auto">
+                    {% include 'clientes/partials/lista_clientes.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'clientes/js/clientes.js' %}?v={% now "U" %}"></script>
+    <script>
+        // Função global para carregar cliente - definida imediatamente
+        function carregarCliente(clienteId) {
+            console.log('=== CARREGANDO CLIENTE ===');
+            console.log('ID do cliente:', clienteId);
+            
+            // Verifica se os elementos necessários estão disponíveis
+            const form = document.getElementById('clienteForm');
+            const formTitle = document.getElementById('formTitle');
+            const submitBtn = document.getElementById('submitBtn');
+            const clienteIdField = document.getElementById('cliente_id');
+            const cancelBtn = document.getElementById('cancelEdit');
+            const listContainer = document.getElementById('client-list-container');
+            
+            if (!form || !formTitle || !submitBtn || !clienteIdField || !listContainer) {
+                console.error('Elementos necessários não encontrados!');
+                alert('Erro: Elementos da página não carregados corretamente.');
+                return;
+            }
+            
+            const CREATE_URL = form.action;
+            const UPDATE_URL_TEMPLATE = listContainer.dataset.updateUrlTemplate;
+            const GET_CLIENT_URL_TEMPLATE = listContainer.dataset.getUrlTemplate;
+            
+            if (!GET_CLIENT_URL_TEMPLATE) {
+                console.error('URL template não encontrada!');
+                alert('Erro de configuração: URL de busca não encontrada.');
+                return;
+            }
+            
+            const fetchUrl = GET_CLIENT_URL_TEMPLATE.replace('0', clienteId);
+            console.log('URL de busca:', fetchUrl);
+
+            // Mostra loading
+            formTitle.textContent = 'Carregando...';
+            
+            fetch(fetchUrl)
+                .then(response => {
+                    console.log('Status da resposta:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Dados recebidos:', data);
+                    
+                    if (data.success && data.cliente) {
+                        const cliente = data.cliente;
+                        console.log('Cliente encontrado:', cliente);
+                        
+                        // Lista de campos para preencher
+                        const campos = [
+                            'numero_os', 'data_chamado', 'status_servico', 'nome', 
+                            'cpf_cnpj', 'telefone', 'celular', 'email', 'apto_bloco',
+                            'endereco', 'bairro', 'cidade', 'cep', 'revendedor',
+                            'tecnicos', 'periodo', 'data_instalacao', 'valor_total',
+                            'forma_pagamento', 'servicos', 'relatorios_servicos_prestados'
+                        ];
+                        
+                        console.log('Preenchendo campos...');
+                        campos.forEach(campo => {
+                            const elemento = document.getElementById(campo);
+                            if (elemento && cliente[campo] !== null && cliente[campo] !== undefined) {
+                                elemento.value = cliente[campo];
+                                console.log(`Campo ${campo} preenchido:`, cliente[campo]);
+                            } else {
+                                console.log(`Campo ${campo} não encontrado ou vazio:`, cliente[campo]);
+                            }
+                        });
+                        
+                        // Define o ID oculto
+                        clienteIdField.value = cliente.id;
+                        
+                        // Muda para modo de edição
+                        formTitle.textContent = `Editar Cliente: ${cliente.nome || 'Cliente'}`;
+                        submitBtn.textContent = 'Atualizar';
+                        submitBtn.className = 'btn-primary';
+                        cancelBtn.style.display = 'inline-block';
+                        
+                        // Define a URL de atualização se disponível
+                        if (UPDATE_URL_TEMPLATE) {
+                            form.action = UPDATE_URL_TEMPLATE.replace('0', cliente.id);
+                        } else {
+                            form.action = CREATE_URL; // Fallback
+                        }
+                        
+                        // Scroll para o formulário
+                        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        
+                        console.log('=== CLIENTE CARREGADO COM SUCESSO ===');
+                    } else {
+                        console.error('Resposta inválida:', data);
+                        alert(`Erro ao carregar cliente: ${data.error || 'Resposta inválida do servidor'}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro na requisição:', error);
+                    alert(`Erro ao carregar cliente: ${error.message}`);
+                    formTitle.textContent = 'Novo Cliente';
+                });
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchNameInput = document.getElementById('search-name-input');
+            const searchOsInput = document.getElementById('search-os-input');
+            const resultsContainer = document.getElementById('client-list-results');
+            const searchFormUrl = "{% url 'clientes:clientes' %}";
+    
+            // Função para evitar buscas a cada tecla pressionada
+            const debounce = (func, delay) => {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                    }, delay);
+                };
+            };
+    
+            const performSearch = () => {
+                const searchName = searchNameInput.value;
+                const searchOs = searchOsInput.value;
+    
+                // Indicador visual de carregamento
+                resultsContainer.innerHTML = '<div class="p-6 text-center text-gray-500">Buscando...</div>';
+    
+                const url = `${searchFormUrl}?search_name=${encodeURIComponent(searchName)}&search_os=${encodeURIComponent(searchOs)}`;
+                
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Erro na busca:', error);
+                    resultsContainer.innerHTML = '<div class="p-6 text-center text-red-500">Erro ao carregar resultados.</div>';
+                });
+            };
+    
+            const debouncedSearch = debounce(performSearch, 300);
+    
+            if(searchNameInput) searchNameInput.addEventListener('input', debouncedSearch);
+            if(searchOsInput) searchOsInput.addEventListener('input', debouncedSearch);
+    
+            // Oculta o botão de pesquisa original, pois a busca agora é automática
+            const searchButton = document.querySelector('form[method="get"] button[type="submit"]');
+            if(searchButton) {
+                searchButton.style.display = 'none';
+            }
+        });
+    </script>
+{% endblock %} 

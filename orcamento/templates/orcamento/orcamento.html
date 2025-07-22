@@ -1,0 +1,380 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tech Projects - Orçamento{% endblock %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'orcamento/css/orcamento.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Messages -->
+    {# Removido: não exibir mensagens para colaboradores na aba de orcamento #}
+
+    <!-- Main Layout -->
+    <div class="flex flex-col-reverse lg:flex-row gap-6">
+        <!-- Left Column - Form (60%) -->
+        <div class="lg:w-3/5 space-y-6">
+            <div class="bg-slate-200 rounded-lg shadow-lg p-6 compact-form">
+                 <form id="orcamentoForm" method="post" action="{% url 'orcamento:salvar_orcamento' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" id="orcamento_id" value="">
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-800" id="formTitle">Novo Orçamento</h3>
+                        <div class="flex gap-2">
+                            <button type="button" id="cancelEdit" class="btn-secondary text-sm" style="display: none;">Cancelar</button>
+                            <button type="button" id="limparForm" class="btn-secondary text-sm">Limpar</button>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Número</label>
+                            <input type="text" name="numero" id="numero" required class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Data</label>
+                            <input type="date" name="data" id="data" required class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select name="status" id="status" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                                <option value="aberto">Aberto</option>
+                                <option value="aprovado">Aprovado</option>
+                                <option value="cancelado">Cancelado</option>
+                                <option value="finalizado">Finalizado</option>
+                                <option value="pendente_pagamento">Pendente de Pagamento</option>
+                                <option value="PAGO">PAGO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                            <input type="text" name="nome" id="nome" required class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Telefone</label>
+                            <input type="text" name="telefone" id="telefone" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Endereço</label>
+                            <input type="text" name="endereco" id="endereco" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">CPF/CNPJ</label>
+                            <input type="text" name="cpf_cnpj" id="cpf_cnpj" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Bairro</label>
+                            <input type="text" name="bairro" id="bairro" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Cidade</label>
+                            <input type="text" name="cidade" id="cidade" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                    </div>
+
+                    <div class="border-t pt-6 mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Itens do Orçamento</h3>
+                            <button type="button" id="adicionar-item" class="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm">+</button>
+                        </div>
+                        <div id="itens-container" class="space-y-2"></div>
+                    </div>
+
+                    <div class="border-t pt-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Valor Total</label>
+                                <input type="text" name="valor_total" id="valor_total" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Desconto</label>
+                                <input type="number" step="0.01" name="valor_desconto" id="valor_desconto" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Total com Desconto</label>
+                                <input type="text" name="valor_total_com_desconto" id="valor_total_com_desconto" readonly class="w-full py-1 bg-gray-100 border-0 border-b-2 border-gray-300">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Observações</label>
+                        <textarea name="observacao" id="observacao" rows="3" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500"></textarea>
+                    </div>
+
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" class="btn-primary" id="submitBtn">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Right Column - List and Search (40%) -->
+        <div class="lg:w-2/5 space-y-6">
+            <!-- Search Section -->
+            <div class="bg-slate-200 rounded-lg shadow-lg p-6 compact-form">
+                <form method="get" action="{% url 'orcamento:lista_orcamentos' %}">
+                    <h3 class="text-xl font-bold text-gray-800 mb-6">Pesquisar</h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Buscar por Nome</label>
+                            <input type="text" name="search_name" id="search-name-input" value="{{ search_name }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Buscar por Número</label>
+                            <input type="text" name="search_numero" id="search-numero-input" value="{{ search_numero }}" class="w-full py-1 bg-transparent border-0 border-b-2 border-gray-300 focus:outline-none focus:ring-0 focus:border-blue-500">
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="btn-secondary w-full mt-4">Pesquisar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Orçamentos List -->
+            <div id="orcamentos-list-container" 
+                 data-get-url-template="{% url 'orcamento:get_orcamento' 0 %}"
+                 class="bg-white rounded-lg shadow-lg compact-form overflow-hidden">
+                <div class="p-6 border-b bg-slate-200">
+                     <h2 class="text-xl font-bold text-gray-800">Listagem de Orçamentos</h2>
+                </div>
+                <div id="orcamento-list-results" class="max-h-96 overflow-y-auto">
+                    {% include 'orcamento/partials/lista_orcamentos.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'orcamento/js/orcamento.js' %}"></script>
+    <script>
+        // Função global para carregar orçamento - definida imediatamente
+        function carregarOrcamento(orcamentoId) {
+            console.log('=== CARREGANDO ORÇAMENTO ===');
+            console.log('ID do orçamento:', orcamentoId);
+            
+            // Verifica se os elementos necessários estão disponíveis
+            const form = document.getElementById('orcamentoForm');
+            const formTitle = document.getElementById('formTitle');
+            const submitBtn = document.getElementById('submitBtn');
+            const orcamentoIdField = document.getElementById('orcamento_id');
+            const cancelBtn = document.getElementById('cancelEdit');
+            const listContainer = document.getElementById('orcamentos-list-container');
+            
+            if (!form || !formTitle || !submitBtn || !orcamentoIdField || !listContainer) {
+                console.error('Elementos necessários não encontrados!');
+                alert('Erro: Elementos da página não carregados corretamente.');
+                return;
+            }
+            
+            const GET_ORCAMENTO_URL_TEMPLATE = listContainer.dataset.getUrlTemplate;
+            
+            if (!GET_ORCAMENTO_URL_TEMPLATE) {
+                console.error('URL template não encontrada!');
+                alert('Erro de configuração: URL de busca não encontrada.');
+                return;
+            }
+            
+            const fetchUrl = GET_ORCAMENTO_URL_TEMPLATE.replace('0', orcamentoId);
+            console.log('URL de busca:', fetchUrl);
+
+            // Mostra loading
+            formTitle.textContent = 'Carregando...';
+            
+            fetch(fetchUrl)
+                .then(response => {
+                    console.log('Status da resposta:', response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Dados recebidos:', data);
+                    
+                    if (data) {
+                        console.log('Orçamento encontrado:', data);
+                        
+                        // Lista de campos para preencher
+                        const campos = [
+                            'numero', 'data', 'status', 'nome', 'telefone', 'endereco', 
+                            'cpf_cnpj', 'bairro', 'cidade', 'observacao', 'valor_total',
+                            'valor_desconto', 'valor_total_com_desconto'
+                        ];
+                        
+                        console.log('Preenchendo campos...');
+                        campos.forEach(campo => {
+                            const elemento = document.getElementById(campo);
+                            if (elemento && data[campo] !== null && data[campo] !== undefined) {
+                                elemento.value = data[campo];
+                                console.log(`Campo ${campo} preenchido:`, data[campo]);
+                            } else {
+                                console.log(`Campo ${campo} não encontrado ou vazio:`, data[campo]);
+                            }
+                        });
+                        
+                        // Define o ID oculto
+                        orcamentoIdField.value = data.id;
+                        
+                        // Muda para modo de edição
+                        formTitle.textContent = `Editar Orçamento: ${data.numero || 'Orçamento'}`;
+                        submitBtn.textContent = 'Atualizar';
+                        submitBtn.className = 'btn-primary';
+                        cancelBtn.style.display = 'inline-block';
+                        
+                        // Carrega os itens
+                        const itensContainer = document.getElementById('itens-container');
+                        itensContainer.innerHTML = '';
+                        
+                        if (data.itens && data.itens.length > 0) {
+                            data.itens.forEach(item => {
+                                const itemDiv = createItemRow();
+                                itemDiv.querySelector('[name="produto[]"]').value = item.produto;
+                                itemDiv.querySelector('[name="quantidade[]"]').value = item.quantidade;
+                                itemDiv.querySelector('[name="valor_unitario[]"]').value = item.valor_unitario;
+                                itensContainer.appendChild(itemDiv);
+                            });
+                        } else {
+                            // Adiciona um item vazio se não houver itens
+                            const addItemBtn = document.getElementById('adicionar-item');
+                            if (addItemBtn) addItemBtn.click();
+                        }
+                        
+                        // Calcula totais
+                        calculateTotals();
+                        
+                        // Scroll para o formulário
+                        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        
+                        console.log('=== ORÇAMENTO CARREGADO COM SUCESSO ===');
+                    } else {
+                        console.error('Resposta inválida:', data);
+                        alert(`Erro ao carregar orçamento: Resposta inválida do servidor`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro na requisição:', error);
+                    alert(`Erro ao carregar orçamento: ${error.message}`);
+                    formTitle.textContent = 'Novo Orçamento';
+                });
+        }
+        
+        // Função para criar linha de item
+        function createItemRow() {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 items-end';
+            itemDiv.innerHTML = `
+                <div class="md:col-span-2">
+                    <input type="text" name="produto[]" class="w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Produto" required>
+                </div>
+                <div>
+                    <input type="number" name="quantidade[]" value="1" class="item-qtd w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Qtd" required>
+                </div>
+                <div>
+                    <input type="number" step="0.01" name="valor_unitario[]" class="item-valor w-full px-3 py-2 border border-gray-300 rounded-md" placeholder="Vlr Unit." required>
+                </div>
+                <div class="flex items-end">
+                    <button type="button" class="remover-item px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">X</button>
+                </div>
+            `;
+
+            itemDiv.querySelector('.remover-item').addEventListener('click', () => {
+                itemDiv.remove();
+                calculateTotals();
+            });
+
+            itemDiv.querySelectorAll('input').forEach(input => {
+                input.addEventListener('input', () => calculateTotals());
+            });
+
+            return itemDiv;
+        }
+        
+        // Função para calcular totais
+        function calculateTotals() {
+            let total = 0;
+            const itemRows = document.querySelectorAll('#itens-container .grid');
+            itemRows.forEach(row => {
+                const qtd = parseFloat(row.querySelector('.item-qtd').value) || 0;
+                const valor = parseFloat(row.querySelector('.item-valor').value) || 0;
+                total += qtd * valor;
+            });
+            
+            const totalInput = document.getElementById('valor_total');
+            const descontoInput = document.getElementById('valor_desconto');
+            const totalComDescontoInput = document.getElementById('valor_total_com_desconto');
+            
+            totalInput.value = total.toFixed(2);
+            const desconto = parseFloat(descontoInput.value) || 0;
+            totalComDescontoInput.value = (total - desconto).toFixed(2);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchNameInput = document.getElementById('search-name-input');
+            const searchNumeroInput = document.getElementById('search-numero-input');
+            const resultsContainer = document.getElementById('orcamento-list-results');
+            const searchForm = document.querySelector('form[method="get"]');
+            const searchFormUrl = searchForm ? searchForm.action : '';
+    
+            const debounce = (func, delay) => {
+                let timeoutId;
+                return (...args) => {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(() => {
+                        func.apply(this, args);
+                    }, delay);
+                };
+            };
+    
+            const performSearch = () => {
+                if (!searchFormUrl) return;
+
+                const searchName = searchNameInput ? searchNameInput.value : '';
+                const searchNumero = searchNumeroInput ? searchNumeroInput.value : '';
+    
+                resultsContainer.innerHTML = '<div class="p-6 text-center text-gray-500">Buscando...</div>';
+    
+                const url = `${searchFormUrl}?search_name=${encodeURIComponent(searchName)}&search_numero=${encodeURIComponent(searchNumero)}`;
+                
+                fetch(url, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.text())
+                .then(html => {
+                    resultsContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Erro na busca:', error);
+                    resultsContainer.innerHTML = '<div class="p-6 text-center text-red-500">Erro ao carregar resultados.</div>';
+                });
+            };
+    
+            const debouncedSearch = debounce(performSearch, 300);
+    
+            if(searchNameInput) searchNameInput.addEventListener('input', debouncedSearch);
+            if(searchNumeroInput) searchNumeroInput.addEventListener('input', debouncedSearch);
+    
+            const searchButton = searchForm ? searchForm.querySelector('button[type="submit"]') : null;
+            if(searchButton) {
+                searchButton.style.display = 'none';
+            }
+        });
+    </script>
+{% endblock %}

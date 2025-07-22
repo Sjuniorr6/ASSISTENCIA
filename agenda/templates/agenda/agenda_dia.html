@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Agenda do Dia{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow p-6 mt-6">
+    <div class="flex items-center justify-between mb-4">
+        <a href="{% url 'agenda:agenda_dia' anterior %}" class="btn btn-primary-base">ANTERIOR</a>
+        <h2 class="text-2xl font-bold">Agenda de {{ agenda.data|date:'d/m/Y' }} ({{ agenda.dia_semana }})</h2>
+        <a href="{% url 'agenda:agenda_dia' proximo %}" class="btn btn-primary-base">PRÓXIMO</a>
+    </div>
+    <table class="w-full text-sm">
+        <thead>
+            <tr class="text-gray-500">
+                <th class="text-left">Horário</th>
+                <th class="text-left">Serviço</th>
+                <th class="text-left">Cliente</th>
+                <th class="text-left">Profissional</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for visita in agenda.visitas.all %}
+            <tr>
+                <td>{{ visita.horario|time:'H:i' }}</td>
+                <td>{{ visita.servico }}</td>
+                <td>{{ visita.cliente }}</td>
+                <td>{{ visita.profissional }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4" class="text-gray-400 text-center">Nenhuma visita agendada</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="flex justify-end mt-4">
+        <a href="{% url 'agenda:agendar_visita' %}" class="btn btn-primary-base">Agendar Nova Visita</a>
+    </div>
+</div>
+{% endblock %} 
